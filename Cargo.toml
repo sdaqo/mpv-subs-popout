@@ -8,6 +8,18 @@ repository = "https://github.com/sdaqo/mpv-subs-popout"
 license = "GPL-3.0-only"
 authors = ["sdaqo <sdaqo.dev@protonmail.com>"]
 
+[package.metadata.deb]
+maintainer = "sdaqo <sdaqo.dev@protonmail.com>"
+license-file = ["LICENSE", 5]
+extended-description = """\
+A little application that makes it possible to display mpv's subs anywhere you want."""
+assets = [
+    ["target/release/mpv-subs-popout", "usr/bin/", "755"],
+    ["README.md", "usr/share/doc/mpv-subs-popout/", "644"],
+    ["share/mpv-subs-popout.desktop", "usr/share/applications/", "644"],
+    ["share/mpv-subs-popout.svg", "/usr/share/icons/hicolor/scalable/apps/", "644"],
+]
+
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
