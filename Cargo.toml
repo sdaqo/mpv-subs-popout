@@ -8,3 +8,6 @@ edition = "2021"
 [dependencies]
 mpvipc = "1.2.2"
 gtk = "0.17.1"
+serde = "1.0.166"
+home-config = { version = "0.6.0", features = ["json"] }
+
