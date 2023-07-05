@@ -2,6 +2,13 @@
 name = "mpv-subs-popout"
 version = "0.1.0"
 edition = "2021"
+description = "Popout Mpv's Subs"
+readme = "README.md"
+repository = "https://github.com/sdaqo/mpv-subs-popout"
+license = "GPL-3.0"
+license-file = "LICENSE"
+authors = ["sdaqo <sdaqo.dev@protonmail.com>"]
+
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

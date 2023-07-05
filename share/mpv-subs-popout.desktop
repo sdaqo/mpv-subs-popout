@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Mpv Subs Popout
+Comment=Popout Mpv's Subs
+Exec=mpv-subs-popout
+Terminal=false
+Type=Application
+Icon=mpv-subs-popout
+Categories=Multimedia;Video
