@@ -5,8 +5,7 @@ edition = "2021"
 description = "Popout Mpv's Subs"
 readme = "README.md"
 repository = "https://github.com/sdaqo/mpv-subs-popout"
-license = "GPL-3.0"
-license-file = "LICENSE"
+license = "GPL-3.0-only"
 authors = ["sdaqo <sdaqo.dev@protonmail.com>"]
 
 
