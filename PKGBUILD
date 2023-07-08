@@ -1,4 +1,4 @@
-# Maintainer: Your Name <your_email@example.com>
+# Maintainer: sdaqo <sdaqo.dev@protonmail.com>
 
 pkgname=mpv-subs-popout
 pkgver=0.1.0
