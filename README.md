@@ -53,6 +53,7 @@ cd target/debian
 - Always on Top & Docked mode
 
 ### Planned
+- Windows Support
 - Custom bg color
 - Custom text color
 - Any other suggested features (Make an Issue)
