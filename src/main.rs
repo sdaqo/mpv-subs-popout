@@ -2,7 +2,7 @@ mod config;
 mod context_menu;
 
 use gtk::prelude::*;
-use gtk::{Application, ApplicationWindow, Label, CheckButton, StyleContext, CssProvider, FontChooserDialog, Scale};
+use gtk::{Application, ApplicationWindow, Label, CheckButton, StyleContext, CssProvider, FontChooserDialog};
 use gtk::glib;
 use gtk::glib::clone;
 use gtk::gdk;
@@ -153,23 +153,30 @@ fn add_context_menu_items(ctx_menu: &ContextMenu, window: &gtk::ApplicationWindo
             Some("Choose a font"),
             Some(&window),
         );
+
+
+        font_chooser.connect_response(move |dialog, res| {
+            if res != gtk::ResponseType::Ok {
+                dialog.close();
+                return;
+            }
         
+            if let Some(font_desc) = dialog.font_desc() {
+                let family = font_desc.family().unwrap_or_default().to_string();
+                let size = font_desc.size() / gtk::pango::SCALE;
+                let style_str = get_style_string(size, family.clone());
+                let _ = css_provider.load_from_data(&style_str);
+
+                let mut cfg = AppConfig::new();
+                cfg.font_family = family;
+                cfg.font_size = size;
+                cfg.save();
+            }
+
+            dialog.close();
+        });
         font_chooser.run();
-        
 
-        if let Some(font_desc) = font_chooser.font_desc() {
-            let family = font_desc.family().unwrap_or_default().to_string();
-            let size = font_desc.size() / gtk::pango::SCALE;
-            let style_str = get_style_string(size, family.clone());
-            let _ = css_provider.load_from_data(&style_str);
-
-            let mut cfg = AppConfig::new();
-            cfg.font_family = family;
-            cfg.font_size = size;
-            cfg.save();
-        }
-
-        font_chooser.close();
         Inhibit(true)
     })));
 
