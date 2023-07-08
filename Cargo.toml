@@ -10,7 +10,7 @@ authors = ["sdaqo <sdaqo.dev@protonmail.com>"]
 
 [package.metadata.deb]
 maintainer = "sdaqo <sdaqo.dev@protonmail.com>"
-license-file = ["LICENSE", 5]
+license-file = ["LICENSE", "5"]
 extended-description = """\
 A little application that makes it possible to display mpv's subs anywhere you want."""
 assets = [
