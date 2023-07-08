@@ -16,8 +16,9 @@ A little application that makes it possible to display mpv's subs anywhere you w
 assets = [
     ["target/release/mpv-subs-popout", "usr/bin/", "755"],
     ["README.md", "usr/share/doc/mpv-subs-popout/", "644"],
-    ["share/mpv-subs-popout.desktop", "usr/share/applications/", "644"],
+    ["share/mpv-subs-popout.desktop", "usr/share/applications/", "755"],
     ["share/mpv-subs-popout.svg", "/usr/share/icons/hicolor/scalable/apps/", "644"],
+    ["share/mpv-subs-popout.png", "/usr/share/icons/hicolor/64x64/apps/", "644"],
 ]
 
 

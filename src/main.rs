@@ -153,7 +153,9 @@ fn add_context_menu_items(ctx_menu: &ContextMenu, window: &gtk::ApplicationWindo
             Some("Choose a font"),
             Some(&window),
         );
+        
         font_chooser.run();
+        
 
         if let Some(font_desc) = font_chooser.font_desc() {
             let family = font_desc.family().unwrap_or_default().to_string();
