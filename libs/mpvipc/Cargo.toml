@@ -1,0 +1,21 @@
+[package]
+name = "mpvipc"
+version = "1.2.2"
+authors = ["Jonas Frei <freijon@pm.me>"]
+description = "A small library which provides bindings to control existing mpv instances through sockets."
+license = "GPL-3.0"
+homepage = "https://gitlab.com/mpv-ipc/mpvipc"
+repository = "https://gitlab.com/mpv-ipc/mpvipc"
+documentation = "https://docs.rs/mpvipc/"
+edition = "2018"
+
+[dependencies]
+serde = "1.0.140"
+serde_json = "1.0.82"
+log = "0.4.17"
+
+[target.'cfg(windows)'.dependencies]
+named_pipe = "0.4.1"
+
+[dev-dependencies]
+env_logger = "0.9.0"

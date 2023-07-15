@@ -481,12 +481,20 @@ dependencies = [
 [[package]]
 name = "mpvipc"
 version = "1.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c80cb5fcf9e81d8b149a44a67d590c684bb09cdba627b9eb094975c23e5061a3"
 dependencies = [
  "log",
+ "named_pipe",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "named_pipe"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ad9c443cce91fc3e12f017290db75dde490d685cdaaf508d7159d7cf41f0eb2b"
+dependencies = [
+ "winapi",
 ]
 
 [[package]]
