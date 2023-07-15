@@ -315,8 +315,12 @@ impl Mpv {
     }
     
     #[cfg(target_os = "windows")]
-    pub fn disconnect(&self) {
-       
+    pub fn disconnect(&mut self) {
+        let stream = &mut self.stream;
+        let mut buffer = [0; 32];
+        for _ in 0..stream.bytes().count() {
+            stream.read(&mut buffer[..]).unwrap();
+        }
     }
 
     #[cfg(target_os = "linux")]
