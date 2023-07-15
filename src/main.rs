@@ -39,11 +39,11 @@ fn main() {
             .title("Mpv Subs Popout")
             .default_width(350)
             .default_height(70)
-            .decorated(false)
             .build(); 
 
-        let config = AppConfig::new(); 
+        let config = AppConfig::new();
 
+        window.set_decorated(config.borders);
         if config.docked {
             window.set_type_hint(gdk::WindowTypeHint::Dock);
         }
@@ -111,13 +111,8 @@ fn add_context_menu_items(ctx_menu: &ContextMenu, window: &gtk::ApplicationWindo
     ctx_menu.add_item(&ontop_btn, Box::new(clone!(@weak window => @default-return Inhibit(true), move |wg, _ev|  {
         let state = wg.is_active();
         
-        if state {
-            wg.set_active(false);
-            window.set_keep_above(false);
-        } else {
-            wg.set_active(true);
-            window.set_keep_above(true);
-        }
+        wg.set_active(!state);
+        window.set_keep_above(!state);
         
         let mut config = AppConfig::new();
         config.ontop = !state;
@@ -147,6 +142,26 @@ fn add_context_menu_items(ctx_menu: &ContextMenu, window: &gtk::ApplicationWindo
 
         Inhibit(true)
     })));
+
+    let borders_btn = CheckButton::builder()
+        .label("Borders")
+        .active(config.borders)
+        .build();
+
+    ctx_menu.add_item(&borders_btn, Box::new(clone!(@weak window => @default-return Inhibit(true), move |wg, _ev| {
+        let state = wg.is_active();
+
+        wg.set_active(!state);
+        window.set_decorated(!state);
+
+        let mut config = AppConfig::new();
+        config.borders = !state;
+        config.save();
+
+        Inhibit(true)
+    })));
+
+
 
     let font = Label::new(Some("Change Font"));
     font.set_xalign(0.0);
@@ -261,6 +276,7 @@ fn add_context_menu_items(ctx_menu: &ContextMenu, window: &gtk::ApplicationWindo
         let _ = css_provider.load_from_data(&style_str);
 
         window.set_keep_above(cfg.ontop);
+        window.set_decorated(cfg.borders);
         ontop_btn.set_active(cfg.ontop);
 
         if cfg.docked {

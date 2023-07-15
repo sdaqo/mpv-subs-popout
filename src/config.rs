@@ -7,6 +7,7 @@ pub struct AppConfig {
     pub font_family: String,
     pub docked: bool,
     pub ontop: bool,
+    pub borders: bool,
     pub bg_col: String,
     pub text_col: String 
 }
@@ -19,6 +20,7 @@ impl AppConfig {
             font_family: "Sans".to_owned(),
             docked: false,
             ontop: true,
+            borders: true,
             bg_col: "rgb(42, 46, 50)".to_owned(),
             text_col: "rgb(255, 255, 255)".to_owned()
         };
