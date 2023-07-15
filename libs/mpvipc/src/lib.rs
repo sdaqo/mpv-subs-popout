@@ -3,6 +3,7 @@ pub mod ipc;
 use ipc::*;
 use std::collections::HashMap;
 use std::fmt::{self, Display};
+use std::io::Read;
 
 #[cfg(target_os = "linux")]
 use std::os::unix::net::UnixStream;
@@ -133,7 +134,12 @@ pub enum ErrorCode {
 }
 
 pub struct Mpv {
+    #[cfg(target_os = "linux")]
+    stream: UnixStream,
+
+    #[cfg(target_os = "windows")]
     stream: PipeClient,
+
     name: String,
 }
 
@@ -270,14 +276,12 @@ impl SetPropertyTypeHandler<usize> for usize {
 }
 
 impl Mpv {
-    #[cfg(target_os = "liunx")]
+    #[cfg(target_os = "linux")]
     pub fn connect(socket: &str) -> Result<Mpv, Error> {
         match UnixStream::connect(socket) {
             Ok(stream) => {
-                let cloned_stream = stream.try_clone().expect("cloning UnixStream");
                 return Ok(Mpv {
                     stream,
-                    reader: BufReader::new(cloned_stream),
                     name: String::from(socket),
                 });
             }
@@ -298,11 +302,24 @@ impl Mpv {
         }
     }
 
+    #[cfg(target_os = "linux")]
+    pub fn disconnect(&mut self) {
+        let mut stream = &self.stream;
+        stream
+            .shutdown(std::net::Shutdown::Both)
+            .expect("socket disconnect");
+        let mut buffer = [0; 32];
+        for _ in 0..stream.bytes().count() {
+            stream.read(&mut buffer[..]).unwrap();
+        }
+    }
+    
+    #[cfg(target_os = "windows")]
     pub fn disconnect(&self) {
        
     }
 
-    #[cfg(target_os = "liunx")]
+    #[cfg(target_os = "linux")]
     pub fn get_stream_ref(&self) -> &UnixStream {
         &self.stream
     }
