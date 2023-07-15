@@ -1,3 +1,6 @@
+// Dont Start with Terminal on Windows
+#![windows_subsystem = "windows"]
+
 mod config;
 mod context_menu;
 
