@@ -39,7 +39,11 @@ Just download the binary release or maybe your distro has any way to install fro
 ### Linux
 To Build a plain and simple binary you will need the libs for gtk3, glib, pango and cairo (probably preinstalled if you are on a system with graphical interface). You will also need Cargo (I recommend you use [rustup](https://rustup.rs/) to install it).
 ```sh
+git clone "https://github.com/sdaqo/mpv-subs-popout" && cd mpv-subs-popout
+
 cargo build --release
+
+# To run it
 ./target/release/mpv-subs-popout
 ```
 To build the .deb do this:
