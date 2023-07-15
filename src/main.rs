@@ -2,7 +2,7 @@ mod config;
 mod context_menu;
 
 use gtk::prelude::*;
-use gtk::{Application, ApplicationWindow, Label, CheckButton, StyleContext, CssProvider, FontChooserDialog};
+use gtk::{Application, ApplicationWindow, Label, CheckButton, StyleContext, CssProvider, FontChooserDialog, ColorChooserDialog};
 use gtk::glib;
 use gtk::glib::clone;
 use gtk::gdk;
@@ -53,7 +53,7 @@ fn main() {
             gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
         );
 
-        let _ = provider.load_from_data(&get_style_string(config.font_size, config.font_family));
+        let _ = provider.load_from_data(&get_style_string(&config));
 
         let sub_label = Label::builder()
             .name("sub_label")
@@ -154,6 +154,8 @@ fn add_context_menu_items(ctx_menu: &ContextMenu, window: &gtk::ApplicationWindo
             Some(&window),
         );
 
+        let cfg = AppConfig::new();
+        font_chooser.set_font(&format!("{} {}", cfg.font_family, cfg.font_size));
 
         font_chooser.connect_response(move |dialog, res| {
             if res != gtk::ResponseType::Ok {
@@ -164,13 +166,14 @@ fn add_context_menu_items(ctx_menu: &ContextMenu, window: &gtk::ApplicationWindo
             if let Some(font_desc) = dialog.font_desc() {
                 let family = font_desc.family().unwrap_or_default().to_string();
                 let size = font_desc.size() / gtk::pango::SCALE;
-                let style_str = get_style_string(size, family.clone());
-                let _ = css_provider.load_from_data(&style_str);
 
                 let mut cfg = AppConfig::new();
                 cfg.font_family = family;
                 cfg.font_size = size;
                 cfg.save();
+
+                let style_str = get_style_string(&cfg);
+                let _ = css_provider.load_from_data(&style_str);
             }
 
             dialog.close();
@@ -179,6 +182,95 @@ fn add_context_menu_items(ctx_menu: &ContextMenu, window: &gtk::ApplicationWindo
 
         Inhibit(true)
     })));
+
+    let bg = Label::new(Some("Change BG Color"));
+    bg.set_xalign(0.0);
+
+    ctx_menu.add_item(&bg, Box::new(clone!(@weak window, @weak css_provider => @default-return Inhibit(true), move |_wg, _ev| {
+        let color_chooser = ColorChooserDialog::new(
+            Some("Choose a BG Color"),
+            Some(&window)
+        );
+        
+        color_chooser.connect_response(move |dialog, res| {
+            if res != gtk::ResponseType::Ok {
+                dialog.close();
+                return;
+            }
+
+            let mut cfg = AppConfig::new();
+            cfg.bg_col = dialog.rgba().to_string(); 
+            cfg.save();
+
+            let style_str = get_style_string(&cfg);
+            let _ = css_provider.load_from_data(&style_str);
+            dialog.close();
+
+        });
+
+        color_chooser.run();
+
+
+        Inhibit(true)
+    })));
+
+    let text_col = Label::new(Some("Change Text Color"));
+    text_col.set_xalign(0.0);
+
+    ctx_menu.add_item(&text_col, Box::new(clone!(@weak window, @weak css_provider => @default-return Inhibit(true), move |_wg, _ev| {
+        let color_chooser = ColorChooserDialog::new(
+            Some("Choose a Text Color"),
+            Some(&window)
+        );
+        
+        color_chooser.connect_response(move |dialog, res| {
+            if res != gtk::ResponseType::Ok {
+                dialog.close();
+                return;
+            }
+
+            let mut cfg = AppConfig::new();
+            cfg.text_col = dialog.rgba().to_string(); 
+            cfg.save();
+
+            let style_str = get_style_string(&cfg);
+            let _ = css_provider.load_from_data(&style_str);
+            dialog.close();
+
+        });
+
+        color_chooser.run();
+
+
+        Inhibit(true)
+    })));
+
+    let reset = Label::new(Some("Reset"));
+    reset.set_xalign(0.0);
+
+    ctx_menu.add_item(&reset, Box::new(clone!(@weak window, @weak css_provider, @weak ontop_btn, @weak dock_btn => @default-return Inhibit(true), move |_wg, _ev| {
+        let cfg_path = AppConfig::config_dir();
+        let _ = cfg_path.delete();
+
+        let cfg = AppConfig::new();
+
+        let style_str = get_style_string(&cfg);
+        let _ = css_provider.load_from_data(&style_str);
+
+        window.set_keep_above(cfg.ontop);
+        ontop_btn.set_active(cfg.ontop);
+
+        if cfg.docked {
+            window.set_type_hint(gdk::WindowTypeHint::Dock);
+            dock_btn.set_active(true);
+        } else {
+            window.set_type_hint(gdk::WindowTypeHint::Normal);
+            dock_btn.set_active(false);
+        }
+
+        Inhibit(true)
+    })));
+
 
     let quit = Label::new(Some("Quit"));
     quit.set_xalign(0.0);
@@ -253,9 +345,13 @@ fn update_thread_target(sender: glib::Sender<Message>) {
     }
 }
 
-fn get_style_string(font_size: i32, font_family: String) -> Vec<u8> {
+fn get_style_string(cfg: &AppConfig) -> Vec<u8> {
     let style_string = format!(
-        "#sub_label {{ font-size: {}pt; font-family: {} }}", font_size, font_family
+        "window {{ background: {}; }} #sub_label {{ font-size: {}pt; color: {}; font-family: {};  }} ", 
+        cfg.bg_col,
+        cfg.font_size, 
+        cfg.text_col,
+        cfg.font_family
     );
     style_string.as_bytes().to_owned()
 }
