@@ -69,10 +69,9 @@ fn main() {
                 Message::UpdateLabel(text) => { sub_label.set_text(text.as_str()) },
                 Message::SpawnThread(_sender) => { 
                     thread::spawn(move || {
-                        let _ = panic::catch_unwind(|| {
+                        let _ = panic::catch_unwind(panic::AssertUnwindSafe(|| {
                             update_thread_target(_sender.clone());
-                        });
-
+                        }));
                         let _ = _sender.send(Message::SpawnThread(_sender.clone()));
                     });
                 },
@@ -98,6 +97,7 @@ fn main() {
 
 
 fn add_context_menu_items(ctx_menu: &ContextMenu, window: &gtk::ApplicationWindow, css_provider: &gtk::CssProvider, sender: &glib::Sender<Message>) {
+    // Todo: add 
     let config = AppConfig::new();
 
     let ontop_btn = CheckButton::builder()
@@ -311,9 +311,15 @@ fn get_sub_text(mpv: &mut Mpv) -> Result<Option<String>, ()> {
 fn update_thread_target(sender: glib::Sender<Message>) {
     let _ = sender.send(Message::UpdateLabel("Waiting for an MPV instance.".to_owned()));
 
+    #[cfg(target_os = "linux")]
+    let server_path = "/tmp/mpvsock";
+
+    #[cfg(target_os = "windows")]
+    let server_path = "\\\\.\\pipe\\mpvsock";
+
     let mut mpv_conn: Mpv;
     loop {
-        match  Mpv::connect("/tmp/mpvsock") {
+        match  Mpv::connect(server_path) {
             Ok(mpv) => {
                 let _ = sender.send(Message::UpdateLabel("Connected to an MPV instance! Subs will be displayed here.".to_owned()));
                 mpv_conn = mpv;
