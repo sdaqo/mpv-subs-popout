@@ -51,9 +51,9 @@ cd target/debian
 - Always works: Open mpv after the Popout or before, it detects mpv and attaches itself
 - Custom Font and Font size
 - Always on Top & Docked mode
+- Custom bg color
+- Custom text color
 
 ### Planned
 - Windows Support
-- Custom bg color
-- Custom text color
 - Any other suggested features (Make an Issue)
