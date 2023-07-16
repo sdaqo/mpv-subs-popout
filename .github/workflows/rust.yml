@@ -7,43 +7,110 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  #build-windows:
-  #  name: 'Build for Windows'
-  #  runs-on: windows-latest
-  #  steps:
-  #    - name: Checkout code
-  #      uses: actions/checkout@v2
-
-  build-linux:
-    name: 'Build for Linux'
-    runs-on: ubuntu-latest
+  build-windows:
+    name: 'Build for Windows'
+    runs-on: windows-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
         
-      - name: Cache APT Packages
-        uses: awalsh128/cache-apt-pkgs-action@v1.3.0
+      - name: Cache gtk3
+        id: cache-gtk3
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-gtk3
         with:
-          packages: libgtk-3-dev libcairo-gobject2 libcairo2-dev libc6 libpango1.0-dev libgdk-pixbuf2.0-dev libglib2.0-dev libatk1.0-dev libgdk3.0-cil-dev
-          version: 1.0
+          path: |
+            C:\gtk-build\
+          key: gtk3
+          
+      - if: ${{ steps.cache-gtk3.outputs.cache-hit != 'true' }}
+        name: Install Build deps for gtk3
+        shell: powershell
+        run: |
+          choco install git -y
+          choco install mysys2 -y
+          choco install visualstudio2022buildtools -y
+          choco install visualstudio2022-workload-vctools -y
+          choco install python -y
+          
+          python -m pip install --user pipx
+          python -m pipx ensurepath
+      
+      - if: ${{ steps.cache-gtk3.outputs.cache-hit != 'true' }}
+        name: Build gtk3
+        shell: powershell
+        run: |
+          pipx install gvsbuild
+          gvsbuild build gtk3
+
+      - name: Add gtk3 to Path
+        shell: powershell
+        run: |
+         $env:Path = "C:\gtk-build\gtk\x64\release\bin;" + $env:Path
+         $env:LIB = "C:\gtk-build\gtk\x64\release\lib;" + $env:LIB
+         $env:INCLUDE = "C:\gtk-build\gtk\x64\release\include;C:\gtk-build\gtk\x64\release\include\cairo;C:\gtk-build\gtk\x64\release\include\glib-2.0;C:\gtk-build\gtk\x64\release\include\gobject-introspection-1.0;C:\gtk-build\gtk\x64\release\lib\glib-2.0\include;" + $env:INCLUDE
+      
+      - name: Set Rust Toolchain
+        shell: powershell
+        run: rustup default stable-msvc
       
       - name: Cargo Cache
         uses: Swatinem/rust-cache@v2
       
       - name: Build Binary
+        shell: powershell
         run: cargo build --release
         
-      - name: Build .deb
+      - name: Pack
+        shell: powershell
         run: |
-          cargo install cargo-deb
-          cargo deb
+          $version = cargo pkgid | Select-String -Pattern "\d+.\d+.\d+" | foreach {$_.Matches.Groups[0].Value}
+          mkdir "mpv-subs-popout_$($version)_win64"
+          mkdir "mpv-subs-popout_$($version)_win64\gtk3-runtime"
+          mkdir "mpv-subs-popout_$($version)_win64\bin"
+          
+          cp "C:\gtk-build\gtk\x64\release\bin\*.dll" ".\mpv-subs-popout_$($version)_win64\gtk3-runtime\"
+          cp ".\target\release\mpv-subs-popout.exe" ".\mpv-subs-popout_$($version)_win64\bin\"
+          
+          Compress-Archive "mpv-subs-popout_$($version)_win64" ".\mpv-subs-popout_$($version)_win64.zip"
           
       - uses: actions/upload-artifact@v3
         with:
-          name: linux-artifact
-          path: |
-            ./target/release/mpv-subs-popout
-            ./target/debian/*.deb
+          name: windows-artifact
+          path: .\*.zip
+          
+    
+  #build-linux:
+  #  name: 'Build for Linux'
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - name: Checkout code
+  #      uses: actions/checkout@v2
+  #      
+  #    - name: Cache APT Packages
+  #      uses: awalsh128/cache-apt-pkgs-action@v1.3.0
+  #      with:
+  #        packages: libgtk-3-dev libcairo-gobject2 libcairo2-dev libc6 libpango1.0-dev libgdk-pixbuf2.0-dev libglib2.0-dev libatk1.0-dev libgdk3.0-cil-dev
+  #        version: 1.0
+  #    
+  #    - name: Cargo Cache
+  #      uses: Swatinem/rust-cache@v2
+  #    
+  #    - name: Build Binary
+  #      run: cargo build --release
+  #      
+  #    - name: Build .deb
+  #      run: |
+  #        cargo install cargo-deb
+  #        cargo deb
+  #        
+  #    - uses: actions/upload-artifact@v3
+  #      with:
+  #        name: linux-artifact
+  #        path: |
+  #          ./target/release/mpv-subs-popout
+  #          ./target/debian/*.deb
 
     
  #release:
