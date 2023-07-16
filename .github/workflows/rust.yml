@@ -46,7 +46,12 @@ jobs:
           $env:INCLUDE = "C:\gtk-build\gtk\x64\release\include;C:\gtk-build\gtk\x64\release\include\cairo;C:\gtk-build\gtk\x64\release\include\glib-2.0;C:\gtk-build\gtk\x64\release\include\gobject-introspection-1.0;C:\gtk-build\gtk\x64\release\lib\glib-2.0\include;" + $env:INCLUDE
       
           cargo build --release
-        
+
+      - name: Build Launcher
+        shell: powershell
+        run: |
+          rustc -C opt-level=3 ./scripts/launch-windows.rs -o mpv-subs-popout
+          
       - name: Pack
         shell: powershell
         run: |
@@ -57,6 +62,7 @@ jobs:
           
           cp "C:\gtk-build\gtk\x64\release\bin\*.dll" ".\mpv-subs-popout_$($version)_win64\gtk3-runtime\"
           cp ".\target\release\mpv-subs-popout.exe" ".\mpv-subs-popout_$($version)_win64\bin\"
+          cp ".\mpv-subs-popout.exe" ".\mpv-subs-popout_$($version)_win64"
           
           Compress-Archive "mpv-subs-popout_$($version)_win64" ".\mpv-subs-popout_$($version)_win64.zip"
           
@@ -66,42 +72,33 @@ jobs:
           path: .\*.zip
           
     
-  #build-linux:
-  #  name: 'Build for Linux'
-  #  runs-on: ubuntu-latest
-  #  steps:
-  #    - name: Checkout code
-  #      uses: actions/checkout@v2
-  #      
-  #    - name: Cache APT Packages
-  #      uses: awalsh128/cache-apt-pkgs-action@v1.3.0
-  #      with:
-  #        packages: libgtk-3-dev libcairo-gobject2 libcairo2-dev libc6 libpango1.0-dev libgdk-pixbuf2.0-dev libglib2.0-dev libatk1.0-dev libgdk3.0-cil-dev
-  #        version: 1.0
-  #    
-  #    - name: Cargo Cache
-  #      uses: Swatinem/rust-cache@v2
-  #    
-  #    - name: Build Binary
-  #      run: cargo build --release
-  #      
-  #    - name: Build .deb
-  #      run: |
-  #        cargo install cargo-deb
-  #        cargo deb
-  #        
-  #    - uses: actions/upload-artifact@v3
-  #      with:
-  #        name: linux-artifact
-  #        path: |
-  #          ./target/release/mpv-subs-popout
-  #          ./target/debian/*.deb
-
-    
- #release:
-    #name: 'Release Artifacts'
-    #needs: [build-windows, build-linux]
-    #runs-on: ubuntu-latest
-    #steps:
-    #  - name: Checkout code
-    #    uses: actions/checkout@v2
+  build-linux:
+    name: 'Build for Linux'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Cache APT Packages
+        uses: awalsh128/cache-apt-pkgs-action@v1.3.0
+        with:
+          packages: libgtk-3-dev libcairo-gobject2 libcairo2-dev libc6 libpango1.0-dev libgdk-pixbuf2.0-dev libglib2.0-dev libatk1.0-dev libgdk3.0-cil-dev
+          version: 1.0
+      
+      - name: Cargo Cache
+        uses: Swatinem/rust-cache@v2
+      
+      - name: Build Binary
+        run: cargo build --release
+        
+      - name: Build .deb
+        run: |
+          cargo install cargo-deb
+          cargo deb
+          
+      - uses: actions/upload-artifact@v3
+        with:
+          name: linux-artifact
+          path: |
+            ./target/release/mpv-subs-popout
+            ./target/debian/*.deb
