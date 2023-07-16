@@ -1,0 +1,52 @@
+name: Build For Windows & Linux
+
+on:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  #build-windows:
+  #  name: 'Build for Windows'
+  #  runs-on: windows-latest
+  #  steps:
+  #    - name: Checkout code
+  #      uses: actions/checkout@v2
+
+  build-linux:
+    name: 'Build for Linux'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Cache APT Packages
+        uses: awalsh128/cache-apt-pkgs-action@v1.3.0
+        with:
+          packages: libgtk-3-0 libcairo-gobject2 libcairo2 libc6 libpango-1.0-0 libgdk-pixbuf2.0-0 libglib2.0-0
+          version: 1.0
+      
+      - name: Build Binary
+        run: cargo build --release
+        
+      - name: Build .deb
+        run: |
+          cargo install cargo-deb
+          cargo deb
+          
+      - uses: actions/upload-artifact@v3
+        with:
+          name: linux-artifact
+          path: |
+            ./target/release/mpv-subs-popout
+            ./target/debian/*.deb
+
+    
+ #release:
+    #name: 'Release Artifacts'
+    #needs: [build-windows, build-linux]
+    #runs-on: ubuntu-latest
+    #steps:
+    #  - name: Checkout code
+    #    uses: actions/checkout@v2
