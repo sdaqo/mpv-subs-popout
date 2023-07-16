@@ -7,9 +7,15 @@ https://github.com/sdaqo/mpv-subs-popout/assets/63876564/42beb106-ae04-4115-8262
 
 
 ## Installation
-This app uses mpv's ipc to get the current subs. To activate this you can either add `--input-ipc-server=/tmp/mpvsock` every time you use mpv or better add the line `input-ipc-server=/tmp/mpvsock` to your `mpv.conf` ([location of config](https://mpv.io/manual/stable/#files)).
 
-> Currently only Linux is Supported. Support for Windows is planned.
+### Mpv Configuration
+This app uses mpv's ipc to get the current subs so you have to acivate it:
+
+For Linux Add `input-ipc-server=/tmp/mpvsock` to your [mpv config](https://mpv.io/manual/stable/#files-~/-config/mpv).
+
+For Windows Add `input-ipc-server=\\.\pipe\mpvsock` to your [mpv config](https://mpv.io/manual/stable/#files-on-windows). 
+
+
 
 ### Arch
 ```sh
@@ -23,7 +29,7 @@ cd .. && rm -rf mpv-subs-popout
 ```
 
 ### Debian (or a derivative)
-Download the latest .deb release from the releases. And then:
+Download the latest .deb release from the [releases page](https://github.com/sdaqo/mpv-subs-popout/releases/latest). And then:
 
 ```sh
 # The ./ is important else it does not install from the file.
@@ -31,7 +37,12 @@ apt install ./name_of_deb.deb
 ```
 
 ### Other Distros
-Just download the binary release or maybe your distro has any way to install from .deb files (search it up).
+Just download the binary release from the [releases page](https://github.com/sdaqo/mpv-subs-popout/releases/latest) or maybe your distro has any way to install from .deb files (search it up).
+
+### Windows
+Download the latest release from the [releases page](https://github.com/sdaqo/mpv-subs-popout/releases/latest).
+
+Unzip the .zip and start `mpv-subs-popout.bat` to start the application. 
 
 
 ## Building
