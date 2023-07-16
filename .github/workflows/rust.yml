@@ -24,7 +24,7 @@ jobs:
       - name: Cache APT Packages
         uses: awalsh128/cache-apt-pkgs-action@v1.3.0
         with:
-          packages: libgtk-3-0 libcairo-gobject2 libcairo2 libc6 libpango-1.0-0 libgdk-pixbuf2.0-0 libglib2.0-0
+          packages: libgtk-3-0 libcairo-gobject2 libcairo2 libc6 libpango-1.0-0 libgdk-pixbuf2.0-0 libglib2.0-0 libatk1.0-dev
           version: 1.0
       
       - name: Build Binary
