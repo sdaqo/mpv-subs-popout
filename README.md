@@ -107,9 +107,14 @@ $env:INCLUDE = "C:\gtk-build\gtk\x64\release\include;C:\gtk-build\gtk\x64\releas
 
 5. Build Rust application
 ```powershell
+# Clone Repo
 git clone "https://github.com/sdaqo/mpv-subs-popout"
 cd 'mpv-subs-popout'
 
+# Set toolchain
+rustup default stable-msvc
+
+# Build
 cargo build --release
 
 # To run it
