@@ -58,9 +58,13 @@ jobs:
           $version = cargo pkgid | Select-String -Pattern "\d+.\d+.\d+" | foreach {$_.Matches.Groups[0].Value}
           mkdir "mpv-subs-popout_$($version)_win64"
           mkdir "mpv-subs-popout_$($version)_win64\gtk3-runtime"
+          mkdir "mpv-subs-popout_$($version)_win64\gtk3-runtime\bin"
           mkdir "mpv-subs-popout_$($version)_win64\bin"
           
-          cp "C:\gtk-build\gtk\x64\release\bin\*.dll" ".\mpv-subs-popout_$($version)_win64\gtk3-runtime\"
+          cp "C:\gtk-build\gtk\x64\release\bin\*.dll" ".\mpv-subs-popout_$($version)_win64\gtk3-runtime\bin"
+          cp "C:\gtk-build\gtk\x64\release\share\" ".\mpv-subs-popout_$($version)_win64\gtk3-runtime\"
+          cp "C:\gtk-build\gtk\x64\release\etc\" ".\mpv-subs-popout_$($version)_win64\gtk3-runtime\"
+
           cp ".\target\release\mpv-subs-popout.exe" ".\mpv-subs-popout_$($version)_win64\bin\"
           cp ".\mpv-subs-popout.exe" ".\mpv-subs-popout_$($version)_win64"
           

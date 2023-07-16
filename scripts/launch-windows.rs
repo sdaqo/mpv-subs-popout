@@ -8,7 +8,7 @@ fn main() {
     let exe_path = env::current_exe().expect("Failed to get the launcher executable path");
     let launcher_dir = exe_path.parent().expect("Failed to get the launcher directory");
 
-    let gtk3_dir = launcher_dir.join("gtk3-runtime");
+    let gtk3_dir = launcher_dir.join("gtk3-runtime/bin/");
     let path = env::var_os("PATH").unwrap_or_default();
     let mut new_path = env::split_paths(&path).collect::<Vec<_>>();
     new_path.insert(0, gtk3_dir);
