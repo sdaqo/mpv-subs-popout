@@ -48,7 +48,7 @@ Just download the binary release from the [releases page](https://github.com/sda
 ### Windows
 Download the latest release from the [releases page](https://github.com/sdaqo/mpv-subs-popout/releases/latest).
 
-Unzip the .zip and start `mpv-subs-popout.bat` to start the application. 
+Unzip the .zip and start `mpv-subs-popout.exe` to start the application. 
 
 
 ## Building
