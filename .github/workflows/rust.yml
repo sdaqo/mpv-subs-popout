@@ -28,7 +28,7 @@ jobs:
         name: Build gtk3
         shell: powershell
         run: |
-          pipx install gvsbuild
+          pipx install git+https://github.com/g40/gvsbuild@libpng
           gvsbuild build gtk3
 
       - name: Add gtk3 to Path
