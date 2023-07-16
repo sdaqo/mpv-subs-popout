@@ -62,8 +62,8 @@ jobs:
           mkdir "mpv-subs-popout_$($version)_win64\bin"
           
           cp "C:\gtk-build\gtk\x64\release\bin\*.dll" ".\mpv-subs-popout_$($version)_win64\gtk3-runtime\bin"
-          cp "C:\gtk-build\gtk\x64\release\share\" ".\mpv-subs-popout_$($version)_win64\gtk3-runtime\"
-          cp "C:\gtk-build\gtk\x64\release\etc\" ".\mpv-subs-popout_$($version)_win64\gtk3-runtime\"
+          cp -r "C:\gtk-build\gtk\x64\release\share\" ".\mpv-subs-popout_$($version)_win64\gtk3-runtime\"
+          cp -r "C:\gtk-build\gtk\x64\release\etc\" ".\mpv-subs-popout_$($version)_win64\gtk3-runtime\"
 
           cp ".\target\release\mpv-subs-popout.exe" ".\mpv-subs-popout_$($version)_win64\bin\"
           cp ".\mpv-subs-popout.exe" ".\mpv-subs-popout_$($version)_win64"
