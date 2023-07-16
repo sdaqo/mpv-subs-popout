@@ -50,7 +50,7 @@ jobs:
       - name: Build Launcher
         shell: powershell
         run: |
-          rustc -C opt-level=3 ./scripts/launch-windows.rs -o mpv-subs-popout
+          rustc -C opt-level=3 ./scripts/launch-windows.rs -o mpv-subs-popout.exe
           
       - name: Pack
         shell: powershell
