@@ -23,20 +23,7 @@ jobs:
           path: |
             C:\gtk-build\
           key: gtk3
-          
-      - if: ${{ steps.cache-gtk3.outputs.cache-hit != 'true' }}
-        name: Install Build deps for gtk3
-        shell: powershell
-        run: |
-          choco install git -y
-          choco install mysys2 -y
-          choco install visualstudio2022buildtools -y
-          choco install visualstudio2022-workload-vctools -y
-          choco install python -y
-          
-          python -m pip install --user pipx
-          python -m pipx ensurepath
-      
+                
       - if: ${{ steps.cache-gtk3.outputs.cache-hit != 'true' }}
         name: Build gtk3
         shell: powershell
