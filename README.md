@@ -18,6 +18,12 @@ For Windows Add `input-ipc-server=\\.\pipe\mpvsock` to your [mpv config](https:/
 
 
 ### Arch
+With Aur helper:
+```sh
+yay -S mpv-subs-popout 
+```
+If you do not have any aur helpers:
+
 ```sh
 mkdir mpv-subs-popout && cd mpv-subs-popout
 
