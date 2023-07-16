@@ -40,7 +40,7 @@ jobs:
           name: linux-artifact
           path: |
             ./target/release/mpv-subs-popout
-            ./target/debian/*.deb
+            ./target/debian/mpv-subs-popout_$(cargo pkgid | cut -d'#' -f2)_amd64.deb
 
     
  #release:
