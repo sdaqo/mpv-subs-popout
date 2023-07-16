@@ -21,7 +21,7 @@ jobs:
           cache-name: cache-gtk3
         with:
           path: |
-            C:\gtk-build\
+            C:\gtk-build\gtk\
           key: gtk3
                 
       - if: ${{ steps.cache-gtk3.outputs.cache-hit != 'true' }}
@@ -31,13 +31,6 @@ jobs:
           pipx install git+https://github.com/g40/gvsbuild@libpng
           gvsbuild build gtk3
 
-      - name: Add gtk3 to Path
-        shell: powershell
-        run: |
-         $env:Path = "C:\gtk-build\gtk\x64\release\bin;" + $env:Path
-         $env:LIB = "C:\gtk-build\gtk\x64\release\lib;" + $env:LIB
-         $env:INCLUDE = "C:\gtk-build\gtk\x64\release\include;C:\gtk-build\gtk\x64\release\include\cairo;C:\gtk-build\gtk\x64\release\include\glib-2.0;C:\gtk-build\gtk\x64\release\include\gobject-introspection-1.0;C:\gtk-build\gtk\x64\release\lib\glib-2.0\include;" + $env:INCLUDE
-      
       - name: Set Rust Toolchain
         shell: powershell
         run: rustup default stable-msvc
@@ -47,7 +40,12 @@ jobs:
       
       - name: Build Binary
         shell: powershell
-        run: cargo build --release
+        run: |
+          $env:Path = "C:\gtk-build\gtk\x64\release\bin;" + $env:Path
+          $env:LIB = "C:\gtk-build\gtk\x64\release\lib;" + $env:LIB
+          $env:INCLUDE = "C:\gtk-build\gtk\x64\release\include;C:\gtk-build\gtk\x64\release\include\cairo;C:\gtk-build\gtk\x64\release\include\glib-2.0;C:\gtk-build\gtk\x64\release\include\gobject-introspection-1.0;C:\gtk-build\gtk\x64\release\lib\glib-2.0\include;" + $env:INCLUDE
+      
+          cargo build --release
         
       - name: Pack
         shell: powershell
