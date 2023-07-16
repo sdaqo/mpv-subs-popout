@@ -266,7 +266,7 @@ fn add_context_menu_items(ctx_menu: &ContextMenu, window: &gtk::ApplicationWindo
     let reset = Label::new(Some("Reset"));
     reset.set_xalign(0.0);
 
-    ctx_menu.add_item(&reset, Box::new(clone!(@weak window, @weak css_provider, @weak ontop_btn, @weak dock_btn => @default-return Inhibit(true), move |_wg, _ev| {
+    ctx_menu.add_item(&reset, Box::new(clone!(@weak window, @weak css_provider, @weak ontop_btn, @weak dock_btn, @weak borders_btn => @default-return Inhibit(true), move |_wg, _ev| {
         let cfg_path = AppConfig::config_dir();
         let _ = cfg_path.delete();
 
@@ -278,6 +278,8 @@ fn add_context_menu_items(ctx_menu: &ContextMenu, window: &gtk::ApplicationWindo
         window.set_keep_above(cfg.ontop);
         window.set_decorated(cfg.borders);
         ontop_btn.set_active(cfg.ontop);
+        borders_btn.set_active(cfg.borders);
+
 
         if cfg.docked {
             window.set_type_hint(gdk::WindowTypeHint::Dock);
