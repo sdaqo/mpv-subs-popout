@@ -127,7 +127,7 @@ cargo build --release
 - Always on Top & Docked mode
 - Custom bg color
 - Custom text color
+- Linux & Windows Support
 
 ### Planned
-- Windows Support
 - Any other suggested features (Make an Issue)
