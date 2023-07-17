@@ -136,4 +136,5 @@ cargo build --release
 - Linux & Windows Support
 
 ### Planned
+- Some kind of dictionary/translation integration ([#2](https://github.com/sdaqo/mpv-subs-popout/issues/2)) 
 - Any other suggested features (Make an Issue)
