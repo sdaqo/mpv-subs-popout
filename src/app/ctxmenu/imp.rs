@@ -1,6 +1,6 @@
+
 use gtk::prelude::*;
 use gtk::gdk;
-
 
 pub struct ContextMenu {
     menu: gtk::Menu
@@ -31,9 +31,9 @@ impl ContextMenu {
         item.show_all();
     }
 
-    pub fn attach_to_window(&self, window: &gtk::ApplicationWindow) {
+    pub fn attach_to_window<W: IsA<gtk::Widget> + IsA<gtk::Window>>(&self, window: &W) {
         let cloned_menu = self.menu.clone();
-
+        
         window.connect_button_press_event(move |_, event| {
             if event.button() == gdk::BUTTON_SECONDARY {
                 cloned_menu.popup_easy(event.button(), event.time());
