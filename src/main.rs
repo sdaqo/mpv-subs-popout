@@ -4,6 +4,7 @@
 mod config;
 mod app;
 mod mpv;
+mod language;
 
 use std::panic;
 

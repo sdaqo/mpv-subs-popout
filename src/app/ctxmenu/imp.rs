@@ -31,7 +31,7 @@ impl ContextMenu {
         item.show_all();
     }
 
-    pub fn attach_to_window<W: IsA<gtk::Widget> + IsA<gtk::Window>>(&self, window: &W) {
+    pub fn attach_to_widget<W: IsA<gtk::Widget>>(&self, window: &W) {
         let cloned_menu = self.menu.clone();
         
         window.connect_button_press_event(move |_, event| {

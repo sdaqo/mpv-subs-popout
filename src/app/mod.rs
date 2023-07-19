@@ -2,6 +2,7 @@ pub mod window;
 pub mod ctxmenu;
 pub mod utils;
 pub mod channel;
+pub mod reference_dialog;
 
 use gtk::{prelude::*, subclass::prelude::ObjectSubclassIsExt, Label};
 use gtk::gdk;
@@ -27,10 +28,17 @@ pub fn build_window(app: &gtk::Application) -> MpvSubsWindow {
     );
 
     let ctx_menu = build_ctxmenu(&window);
-    ctx_menu.attach_to_window(&window);
+    //ctx_menu.attach_to_window(&window);
+    
+    let sub_label = Label::builder()
+        .name("sub_label")
+        .selectable(true)
+        .build();
+
+    ctx_menu.attach_to_widget(&sub_label);
 
     // TODO: Custom Label with useful functionality
-    window.imp().sub_label.set(Label::builder().name("sub_label").build()).ok();
+    window.imp().sub_label.set(sub_label).ok();
     window.add(window.imp().sub_label.get().unwrap());
 
     window.imp().channel_sender.set(setup_channel(&window)).ok();

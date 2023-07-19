@@ -88,28 +88,26 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
         let cfg = AppConfig::new();
         font_chooser.set_font(&format!("{} {}", cfg.font_family, cfg.font_size));
 
-        font_chooser.connect_response(move |dialog, res| {
-            if res != gtk::ResponseType::Ok {
-                dialog.close();
-                return;
-            }
-        
-            if let Some(font_desc) = dialog.font_desc() {
-                let family = font_desc.family().unwrap_or_default().to_string();
-                let size = font_desc.size() / gtk::pango::SCALE;
+        let res = font_chooser.run();
+        if res != gtk::ResponseType::Ok {
+            font_chooser.close();
+            return Inhibit(true);
+        }
+    
+        if let Some(font_desc) = font_chooser.font_desc() {
+            let family = font_desc.family().unwrap_or_default().to_string();
+            let size = font_desc.size() / gtk::pango::SCALE;
 
-                let mut cfg = AppConfig::new();
-                cfg.font_family = family;
-                cfg.font_size = size;
-                cfg.save();
+            let mut cfg = AppConfig::new();
+            cfg.font_family = family;
+            cfg.font_size = size;
+            cfg.save();
 
-                let style_str = get_style_string(&cfg);
-                let _ = window.imp().css_provider.get().unwrap().load_from_data(&style_str);
-            }
+            let style_str = get_style_string(&cfg);
+            let _ = window.imp().css_provider.get().unwrap().load_from_data(&style_str);
+        }
 
-            dialog.close();
-        });
-        font_chooser.run();
+        font_chooser.close();
 
         Inhibit(true)
     })));
@@ -123,24 +121,21 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
             Some(&window)
         );
         
-        color_chooser.connect_response(move |dialog, res| {
-            if res != gtk::ResponseType::Ok {
-                dialog.close();
-                return;
-            }
+        let res =color_chooser.run();
 
-            let mut cfg = AppConfig::new();
-            cfg.bg_col = dialog.rgba().to_string(); 
-            cfg.save();
+        if res != gtk::ResponseType::Ok {
+            color_chooser.close();
+            return Inhibit(true);
+        }
 
-            let style_str = get_style_string(&cfg);
-            let _ = window.imp().css_provider.get().unwrap().load_from_data(&style_str);
-            dialog.close();
+        let mut cfg = AppConfig::new();
+        cfg.bg_col = color_chooser.rgba().to_string(); 
+        cfg.save();
 
-        });
+        let style_str = get_style_string(&cfg);
+        let _ = window.imp().css_provider.get().unwrap().load_from_data(&style_str);
 
-        color_chooser.run();
-
+        color_chooser.close();
 
         Inhibit(true)
     })));
@@ -154,24 +149,20 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
             Some(&window)
         );
         
-        color_chooser.connect_response(move |dialog, res| {
-            if res != gtk::ResponseType::Ok {
-                dialog.close();
-                return;
-            }
+        let res = color_chooser.run();
 
-            let mut cfg = AppConfig::new();
-            cfg.text_col = dialog.rgba().to_string(); 
-            cfg.save();
+        if res != gtk::ResponseType::Ok {
+            color_chooser.close();
+            return Inhibit(true);
+        }
 
-            let style_str = get_style_string(&cfg);
-            let _ = window.imp().css_provider.get().unwrap().load_from_data(&style_str);
-            dialog.close();
+        let mut cfg = AppConfig::new();
+        cfg.text_col = color_chooser.rgba().to_string(); 
+        cfg.save();
 
-        });
-
-        color_chooser.run();
-
+        let style_str = get_style_string(&cfg);
+        let _ = window.imp().css_provider.get().unwrap().load_from_data(&style_str);
+        color_chooser.close();
 
         Inhibit(true)
     })));

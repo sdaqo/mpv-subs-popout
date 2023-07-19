@@ -3,6 +3,7 @@ use std::thread;
 use std::time;
 
 use crate::app::channel::Message;
+use crate::language::{Translator, translators::google, TranslatorResponse};
 
 use mpvipc::{Mpv, Event, Property, MpvDataType};
 
@@ -42,7 +43,19 @@ pub fn mpv_subs_update(sender: glib::Sender<Message>) {
 
         match sub_text {
             Some(text) => {
-                let _ = sender.send(Message::UpdateLabel(text));
+                if text.is_empty() {
+                    let _ = sender.send(Message::UpdateLabel(text));
+                } else {
+                    println!("Doing Translation...");
+                    let translator = google::Google::new();
+                    let translated_text: String = match translator.translate(&text, google::Language::Japanese, google::Language::English) {
+                        Ok(res) => { res.translation },
+                        Err(err) => { 
+                            println!("{:?}", err);
+                            text}
+                    };
+                    let _ = sender.send(Message::UpdateLabel(translated_text));
+                }
             },
             None => {}
         }
