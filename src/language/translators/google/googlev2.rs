@@ -1,1 +1,0 @@
-pub struct GoogleV2 {}

@@ -1,13 +1,16 @@
 mod imp;
 
-use gtk::{prelude::*, subclass::prelude::ObjectSubclassIsExt, Label, CheckButton, FontChooserDialog, ColorChooserDialog};
-use gtk::glib::clone;
-use gtk::glib;
 use gtk::gdk;
+use gtk::glib;
+use gtk::glib::clone;
+use gtk::{
+    prelude::*, subclass::prelude::ObjectSubclassIsExt, CheckButton, ColorChooserDialog,
+    FontChooserDialog, Label,
+};
 
+use crate::app::utils::get_style_string;
 use crate::app::MpvSubsWindow;
 use crate::config::AppConfig;
-use crate::app::utils::get_style_string;
 
 use imp::ContextMenu;
 
@@ -21,151 +24,185 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
         .active(config.ontop)
         .build();
 
-    ctxmenu.add_item(&ontop_btn, Box::new(clone!(@weak window => @default-return Inhibit(true), move |wg, _ev|  {
-        let state = wg.is_active();
-        
-        wg.set_active(!state);
-        window.set_keep_above(!state);
-        
-        let mut config = AppConfig::new();
-        config.ontop = !state;
-        config.save();
+    ctxmenu.add_item(
+        &ontop_btn,
+        Box::new(
+            clone!(@weak window => @default-return Inhibit(true), move |wg, _ev|  {
+                let state = wg.is_active();
 
-        Inhibit(true)
-    })));
+                wg.set_active(!state);
+                window.set_keep_above(!state);
+
+                let mut config = AppConfig::new();
+                config.ontop = !state;
+                config.save();
+
+                Inhibit(true)
+            }),
+        ),
+        None,
+    );
 
     let dock_btn = CheckButton::builder()
         .label("Docked")
         .active(config.docked)
         .build();
 
-    ctxmenu.add_item(&dock_btn, Box::new(clone!(@weak window => @default-return Inhibit(true), move |wg, _ev| {
-        let state = wg.is_active();
-        if state {
-            wg.set_active(false);
-            window.set_type_hint(gdk::WindowTypeHint::Normal);
-        } else {
-            wg.set_active(true);
-            window.set_type_hint(gdk::WindowTypeHint::Dock);
-        }
+    ctxmenu.add_item(
+        &dock_btn,
+        Box::new(
+            clone!(@weak window => @default-return Inhibit(true), move |wg, _ev| {
+                let state = wg.is_active();
+                if state {
+                    wg.set_active(false);
+                    window.set_type_hint(gdk::WindowTypeHint::Normal);
+                } else {
+                    wg.set_active(true);
+                    window.set_type_hint(gdk::WindowTypeHint::Dock);
+                }
 
-        let mut config = AppConfig::new();
-        config.docked = !state;
-        config.save();
+                let mut config = AppConfig::new();
+                config.docked = !state;
+                config.save();
 
-        Inhibit(true)
-    })));
+                Inhibit(true)
+            }),
+        ),
+        None,
+    );
 
     let borders_btn = CheckButton::builder()
         .label("Borders")
         .active(config.borders)
         .build();
 
-    ctxmenu.add_item(&borders_btn, Box::new(clone!(@weak window => @default-return Inhibit(true), move |wg, _ev| {
-        let state = wg.is_active();
+    ctxmenu.add_item(
+        &borders_btn,
+        Box::new(
+            clone!(@weak window => @default-return Inhibit(true), move |wg, _ev| {
+                let state = wg.is_active();
 
-        wg.set_active(!state);
-        window.set_decorated(!state);
+                wg.set_active(!state);
+                window.set_decorated(!state);
 
-        let mut config = AppConfig::new();
-        config.borders = !state;
-        config.save();
+                let mut config = AppConfig::new();
+                config.borders = !state;
+                config.save();
 
-        Inhibit(true)
-    })));
-
-
+                Inhibit(true)
+            }),
+        ),
+        None,
+    );
 
     let font = Label::new(Some("Change Font"));
     font.set_xalign(0.0);
 
-    ctxmenu.add_item(&font, Box::new(clone!(@weak window => @default-return Inhibit(true), move |_wg, _ev| {
-        let font_chooser = FontChooserDialog::new(
-            Some("Choose a font"),
-            Some(&window),
-        );
+    ctxmenu.add_item(
+        &font,
+        Box::new(
+            clone!(@weak window => @default-return Inhibit(true), move |_wg, _ev| {
+                let font_chooser = FontChooserDialog::new(
+                    Some("Choose a font"),
+                    Some(&window),
+                );
 
-        let cfg = AppConfig::new();
-        font_chooser.set_font(&format!("{} {}", cfg.font_family, cfg.font_size));
+                let cfg = AppConfig::new();
+                font_chooser.set_font(&format!("{} {}", cfg.font_family, cfg.font_size));
 
-        let res = font_chooser.run();
-        if res != gtk::ResponseType::Ok {
-            font_chooser.close();
-            return Inhibit(true);
-        }
-    
-        if let Some(font_desc) = font_chooser.font_desc() {
-            let family = font_desc.family().unwrap_or_default().to_string();
-            let size = font_desc.size() / gtk::pango::SCALE;
+                let res = font_chooser.run();
+                if res != gtk::ResponseType::Ok {
+                    font_chooser.close();
+                    return Inhibit(true);
+                }
 
-            let mut cfg = AppConfig::new();
-            cfg.font_family = family;
-            cfg.font_size = size;
-            cfg.save();
+                if let Some(font_desc) = font_chooser.font_desc() {
+                    let family = font_desc.family().unwrap_or_default().to_string();
+                    let size = font_desc.size() / gtk::pango::SCALE;
 
-            let style_str = get_style_string(&cfg);
-            let _ = window.imp().css_provider.get().unwrap().load_from_data(&style_str);
-        }
+                    let mut cfg = AppConfig::new();
+                    cfg.font_family = family;
+                    cfg.font_size = size;
+                    cfg.save();
 
-        font_chooser.close();
+                    let style_str = get_style_string(&cfg);
+                    let _ = window.imp().css_provider.get().unwrap().load_from_data(&style_str);
+                }
 
-        Inhibit(true)
-    })));
+                font_chooser.close();
+
+                Inhibit(true)
+            }),
+        ),
+        None,
+    );
 
     let bg = Label::new(Some("Change BG Color"));
     bg.set_xalign(0.0);
 
-    ctxmenu.add_item(&bg, Box::new(clone!(@weak window => @default-return Inhibit(true), move |_wg, _ev| {
-        let color_chooser = ColorChooserDialog::new(
-            Some("Choose a BG Color"),
-            Some(&window)
-        );
-        
-        let res =color_chooser.run();
+    ctxmenu.add_item(
+        &bg,
+        Box::new(
+            clone!(@weak window => @default-return Inhibit(true), move |_wg, _ev| {
+                let color_chooser = ColorChooserDialog::new(
+                    Some("Choose a BG Color"),
+                    Some(&window)
+                );
 
-        if res != gtk::ResponseType::Ok {
-            color_chooser.close();
-            return Inhibit(true);
-        }
+                let res =color_chooser.run();
 
-        let mut cfg = AppConfig::new();
-        cfg.bg_col = color_chooser.rgba().to_string(); 
-        cfg.save();
+                if res != gtk::ResponseType::Ok {
+                    color_chooser.close();
+                    return Inhibit(true);
+                }
 
-        let style_str = get_style_string(&cfg);
-        let _ = window.imp().css_provider.get().unwrap().load_from_data(&style_str);
+                let mut cfg = AppConfig::new();
+                cfg.bg_col = color_chooser.rgba().to_string();
+                cfg.save();
 
-        color_chooser.close();
+                let style_str = get_style_string(&cfg);
+                let _ = window.imp().css_provider.get().unwrap().load_from_data(&style_str);
 
-        Inhibit(true)
-    })));
+                color_chooser.close();
+
+                Inhibit(true)
+            }),
+        ),
+        None,
+    );
 
     let text_col = Label::new(Some("Change Text Color"));
     text_col.set_xalign(0.0);
 
-    ctxmenu.add_item(&text_col, Box::new(clone!(@weak window => @default-return Inhibit(true), move |_wg, _ev| {
-        let color_chooser = ColorChooserDialog::new(
-            Some("Choose a Text Color"),
-            Some(&window)
-        );
-        
-        let res = color_chooser.run();
+    ctxmenu.add_item(
+        &text_col,
+        Box::new(
+            clone!(@weak window => @default-return Inhibit(true), move |_wg, _ev| {
+                let color_chooser = ColorChooserDialog::new(
+                    Some("Choose a Text Color"),
+                    Some(&window)
+                );
 
-        if res != gtk::ResponseType::Ok {
-            color_chooser.close();
-            return Inhibit(true);
-        }
+                let res = color_chooser.run();
 
-        let mut cfg = AppConfig::new();
-        cfg.text_col = color_chooser.rgba().to_string(); 
-        cfg.save();
+                if res != gtk::ResponseType::Ok {
+                    color_chooser.close();
+                    return Inhibit(true);
+                }
 
-        let style_str = get_style_string(&cfg);
-        let _ = window.imp().css_provider.get().unwrap().load_from_data(&style_str);
-        color_chooser.close();
+                let mut cfg = AppConfig::new();
+                cfg.text_col = color_chooser.rgba().to_string();
+                cfg.save();
 
-        Inhibit(true)
-    })));
+                let style_str = get_style_string(&cfg);
+                let _ = window.imp().css_provider.get().unwrap().load_from_data(&style_str);
+                color_chooser.close();
+
+                Inhibit(true)
+            }),
+        ),
+        None,
+    );
 
     let reset = Label::new(Some("Reset"));
     reset.set_xalign(0.0);
@@ -194,15 +231,47 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
         }
 
         Inhibit(true)
-    })));
+    })), None);
 
+    let trans_dict = Label::new(Some("Translate/Lookup"));
+    trans_dict.set_xalign(0.0);
+
+    ctxmenu.add_item(
+        &trans_dict,
+        Box::new(
+            clone!(@weak window => @default-return Inhibit(true), move |_wg, _ev| {
+                Inhibit(true)
+            }),
+        ),
+        Some(Box::new(
+            clone!(@weak window => @default-return false, move |wg| {
+                println!("Hello World");
+                match window.imp().sub_label.get() {
+                    Some(label) => {
+                        match label.selection_bounds() {
+                            Some(..) => { true },
+                            None => {false }
+                        }
+                    },
+                    None => {false}
+                }
+            }),
+        )),
+    );
 
     let quit = Label::new(Some("Quit"));
     quit.set_xalign(0.0);
-    ctxmenu.add_item(&quit, Box::new(clone!(@strong window => @default-return Inhibit(true), move |_wg, _ev| {
-        window.quit();
-        Inhibit(true)
-    })));
+
+    ctxmenu.add_item(
+        &quit,
+        Box::new(
+            clone!(@weak window => @default-return Inhibit(true), move |_wg, _ev| {
+                window.quit();
+                Inhibit(true)
+            }),
+        ),
+        None,
+    );
 
     return ctxmenu;
 }

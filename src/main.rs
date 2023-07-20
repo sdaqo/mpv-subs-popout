@@ -15,12 +15,12 @@ use app::build_window;
 use app::channel::Message;
 use app::utils::load_settings;
 
-
 fn main() {
     panic::set_hook(Box::new(|_info| {
+        println!("{}", _info.to_string());
         // Suppress panic warnings because mpvipc panics when we get an RST packet. ¯\_(ツ)_/¯
     }));
-    
+   
     let application = Application::builder()
         .application_id("dev.sdaqo.mpvSubsPopout")
         .build();
