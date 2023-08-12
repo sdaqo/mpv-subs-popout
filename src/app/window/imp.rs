@@ -8,6 +8,8 @@ use crate::app::channel::Message;
 pub struct MpvSubsWindow {
     pub css_provider: OnceCell<gtk::CssProvider>,
     pub sub_label: OnceCell<gtk::Label>,
+    pub tl_label: OnceCell<gtk::Label>,
+    pub label_box: OnceCell<gtk::Box>,
     pub channel_sender: OnceCell<glib::Sender<Message>>
 }
 

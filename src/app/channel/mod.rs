@@ -1,5 +1,5 @@
 use glib::{MainContext, Sender, clone};
-use gtk::{glib, subclass::prelude::ObjectSubclassIsExt, prelude::LabelExt};
+use gtk::{glib, subclass::prelude::ObjectSubclassIsExt, prelude::*};
 use std::thread;
 use std::panic;
 
@@ -8,6 +8,8 @@ use crate::mpv::mpv_subs_update;
 
 pub enum Message {
     UpdateLabel(String),
+    UpdateTlLabel(String),
+    SetTlLabelVisibilty(bool),
     SpawnThread,
     Quit
 }
@@ -25,13 +27,39 @@ pub fn setup_channel(window: &MpvSubsWindow) -> Sender<Message> {
                     .set_text(text.as_str());
             },
 
+            Message::UpdateTlLabel(text) => {
+                window.imp()
+                    .tl_label
+                    .get()
+                    .unwrap()
+                    .set_text(text.as_str())
+            },
+
+            Message::SetTlLabelVisibilty(visible) => {
+                let label_box = window.imp().label_box.get().unwrap();
+                let contains_tl_label = label_box
+                    .children()
+                    .len() > 1;
+
+
+                if visible {
+                    if !contains_tl_label {
+                        label_box.add(window.imp().tl_label.get().unwrap());
+                        label_box.show_all();
+                    }
+                } else if contains_tl_label {
+                        label_box.remove(window.imp().tl_label.get().unwrap());
+                        label_box.show_all();
+                }
+            },
+
             Message::SpawnThread => { 
                 thread::spawn(clone!(@strong sender => move || {
-                    let _ = panic::catch_unwind(panic::AssertUnwindSafe(|| {
+                    panic::catch_unwind(panic::AssertUnwindSafe(|| {
                         mpv_subs_update(sender.clone());
-                    }));
+                    })).ok();
 
-                    let _ = sender.send(Message::SpawnThread);
+                    sender.send(Message::SpawnThread).ok();
 
                 }));
             },
@@ -40,5 +68,5 @@ pub fn setup_channel(window: &MpvSubsWindow) -> Sender<Message> {
         glib::Continue(true)
     }));
 
-    return sender;
+    sender
 }

@@ -5,7 +5,7 @@ use crate::app::window::MpvSubsWindow;
 
 pub fn get_style_string(cfg: &AppConfig) -> Vec<u8> {
     let style_string = format!(
-        "window {{ background: {}; }} #sub_label {{ font-size: {}pt; color: {}; font-family: {};  }} ", 
+        "window {{ background: {}; }} .sub_label {{ font-size: {}pt; color: {}; font-family: {};  }} ", 
         cfg.bg_col,
         cfg.font_size, 
         cfg.text_col,

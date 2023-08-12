@@ -1,9 +1,11 @@
 # Mpv Subs Popout 
-A little application that makes it possible to display mpv's subs anywhere you want.
+A little application that makes it possible to display mpv's subs anywhere you want, it also includes translation (potentially for language learning).
 
 Why? You can now watch shows in foreign languages on your second monitor and do other stuff on your main monitor while still being able to read the subs. (Thats why I built this anway)
 
-https://github.com/sdaqo/mpv-subs-popout/assets/63876564/42beb106-ae04-4115-8262-03bc50414d8a
+
+
+https://github.com/sdaqo/mpv-subs-popout/assets/63876564/063e52e4-dddd-46e6-92f1-af6a486d3fe0
 
 
 ## Installation
@@ -128,6 +130,8 @@ cargo build --release
 ```
 
 ## Features
+- Full custom translator widget
+- Auto translation in seperate line
 - Always works: Open mpv after the Popout or before, it detects mpv and attaches itself
 - Custom Font and Font size
 - Always on Top & Docked mode
@@ -136,5 +140,5 @@ cargo build --release
 - Linux & Windows Support
 
 ### Planned
-- Some kind of dictionary/translation integration ([#2](https://github.com/sdaqo/mpv-subs-popout/issues/2)) 
+- Dictionary for looking up words
 - Any other suggested features (Make an Issue)
