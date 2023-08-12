@@ -11,6 +11,7 @@ use mpvipc::{Mpv, Event, Property, MpvDataType};
 
 pub fn mpv_subs_update(sender: glib::Sender<Message>) {
     sender.send(Message::UpdateLabel("Waiting for an MPV instance.".to_owned())).ok();
+    sender.send(Message::UpdateTlLabel("Waiting for an MPV instance.".to_owned())).ok();
 
     #[cfg(target_os = "linux")]
     let server_path = "/tmp/mpvsock";

@@ -286,5 +286,12 @@ impl TranslatorWidget {
 
     fn change_to_dict(&self, _wg: &gtk::Button) {
         // ** NOT IMPLEMENTED **
+        gtk::MessageDialog::new::<gtk::Window>(
+            None,
+            gtk::DialogFlags::MODAL,
+            gtk::MessageType::Info,
+            gtk::ButtonsType::Ok,
+            "Not implemented yet"
+        ).run();
     } 
 }

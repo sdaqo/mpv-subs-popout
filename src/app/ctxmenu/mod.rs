@@ -105,7 +105,7 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
         .build();
     
     ctxmenu.add_item(
-        &borders_btn, 
+        &auto_tl_btn, 
         Box::new(
             clone!(@weak window => @default-return Inhibit(true), move |wg, _ev| {
                 let state = wg.is_active();
