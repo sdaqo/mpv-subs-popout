@@ -19,13 +19,13 @@ impl Translator for GoogleApiV2 {
     fn translate(&self, text: &str, in_lang: impl LanguageExt, out_lang: impl LanguageExt) -> Result<TranslatorResponse, Error> {
         let in_lang_code = match Language::from_language_code(&in_lang.to_language_code()) {
             Some(lang) => { lang.to_language_code() } ,
-            None => { return Err( Error::LanguageNotAvailableError(in_lang.to_language_name()) ) }
+            None => { return Err( Error::LanguageNotAvailable(in_lang.to_language_name()) ) }
         };
    
    
         let out_lang_code = match Language::from_language_code(&out_lang.to_language_code()) {
             Some(lang) => { lang.to_language_code() } ,
-            None => { return Err( Error::LanguageNotAvailableError(out_lang.to_language_name()) ) }
+            None => { return Err( Error::LanguageNotAvailable(out_lang.to_language_name()) ) }
         };
         
         
@@ -45,34 +45,41 @@ impl Translator for GoogleApiV2 {
         let json = match res {
             Ok(res) => {
                 if res.status().as_u16() != 200 {
-                    return Err(Error::GoogleError(res.status().as_u16()));
+                    return Err(Error::Google(res.status().as_u16()));
                 }
                 res.json::<serde_json::Value>()
              },
              Err(error) => {
-                return Err(Error::RequestError(error.to_string()));
+                return Err(Error::Request(error.to_string()));
              }
         };
 
         let json = match json {
             Ok(json) => { json },
             Err(error) => { 
-               return Err(Error::DeserializationError(error.to_string()));
+               return Err(Error::Deserialization(error.to_string()));
             }
         };
 
         let translation = json["data"]["translations"][0]["translatedText"].as_str();
 
-        return match translation {
+        match translation {
             Some(trans) => {
                 Ok(TranslatorResponse { translation: trans.to_string(), alternatives: None })
             },
             None => {Err(Error::NoTranslation)}
-        };
+        }
     }
 
-    fn get_name() -> String {
+    fn get_name() -> String  {
         "Google Translate Api V2".to_string()
+    }
+
+    fn get_api_key_url() -> Option<String> {
+        Some(
+            "https://console.cloud.google.com/marketplace/product/google/translate.googleapis.com"
+            .to_string()
+        )
     }
 
 }

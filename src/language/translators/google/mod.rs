@@ -6,10 +6,10 @@ use strum_macros;
 use strum::{EnumProperty, IntoEnumIterator};
 use std::str::FromStr;
 
-use crate::language::{prelude::*, TranslatorResponse, Error};
+use crate::language::{prelude::*};
 
-use googleapiv1::GoogleApiV1;
-use googleapiv2::GoogleApiV2;
+pub use googleapiv1::GoogleApiV1;
+pub use googleapiv2::GoogleApiV2;
 pub use googlescrape::GoogleScrape;
 
 
@@ -293,7 +293,7 @@ impl LanguageExt for Language {
             Some(Box::new(lang))
          },
          Err(..) => { None }
-      }      
+      }
     }
 
     fn from_language_name(name: &str) -> Option<Box<Self>> {
@@ -311,41 +311,4 @@ impl LanguageExt for Language {
     fn get_iterator() -> Box<dyn Iterator<Item = Self>> {
         Box::new(Language::iter())
     }
-}
- 
-pub struct GoogleApi {
-  key: Option<String>
-}
-
-
-impl Translator for GoogleApi {
-  fn new() -> Self {
-      GoogleApi { key: None }
-  }
-
-  fn translate(&self, text: &str, in_lang: impl LanguageExt, out_lang: impl LanguageExt) -> Result<TranslatorResponse, Error> {
-      match &self.key {
-        Some(key) => { 
-          let mut google_v2 = GoogleApiV2::new();
-          google_v2.set_key(key.to_string());
-          google_v2.translate(text, in_lang, out_lang)
-        },
-        None => { GoogleApiV1::new().translate(text, in_lang, out_lang) }
-      }
-  }
-
-  fn get_name() -> String {
-      "Google Translate Api".to_string()
-  }
-}
-
-
-impl ApiKey for GoogleApi {
-  fn set_key(&mut self, key: String) {
-      self.key = Some(key);
-  }
-
-  fn get_key(&self) -> Option<String> {
-      self.key.clone()
-  }
 }

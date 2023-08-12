@@ -1,7 +1,6 @@
 
 use gtk::prelude::*;
 use gtk::gdk;
-use gtk::glib::clone;
 
 pub struct ContextMenu {
     menu: gtk::Menu

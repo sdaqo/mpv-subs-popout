@@ -7,10 +7,14 @@ use gtk::{
     prelude::*, subclass::prelude::ObjectSubclassIsExt, CheckButton, ColorChooserDialog,
     FontChooserDialog, Label,
 };
+use unicode_segmentation::UnicodeSegmentation;
 
 use crate::app::utils::get_style_string;
+use crate::app::channel::Message;
+use crate::app::reference_dialog::ReferenceDialog;
 use crate::app::MpvSubsWindow;
 use crate::config::AppConfig;
+
 
 use imp::ContextMenu;
 
@@ -84,7 +88,7 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
 
                 wg.set_active(!state);
                 window.set_decorated(!state);
-
+            
                 let mut config = AppConfig::new();
                 config.borders = !state;
                 config.save();
@@ -94,6 +98,35 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
         ),
         None,
     );
+
+    let auto_tl_btn = CheckButton::builder()
+        .label("Auto Translate")
+        .active(config.auto_tl)
+        .build();
+    
+    ctxmenu.add_item(
+        &borders_btn, 
+        Box::new(
+            clone!(@weak window => @default-return Inhibit(true), move |wg, _ev| {
+                let state = wg.is_active();
+
+
+                wg.set_active(!state);
+
+                let _  = window.imp().channel_sender.get().unwrap().send(Message::SetTlLabelVisibilty(!state));
+                let _  = window.imp().channel_sender.get().unwrap().send(Message::UpdateTlLabel("".to_string()));
+
+                let mut config = AppConfig::new();
+                config.auto_tl = !state;
+                config.save();
+
+                Inhibit(false)
+            })
+        ),
+        None
+    );
+
+
 
     let font = Label::new(Some("Change Font"));
     font.set_xalign(0.0);
@@ -126,7 +159,7 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
                     cfg.save();
 
                     let style_str = get_style_string(&cfg);
-                    let _ = window.imp().css_provider.get().unwrap().load_from_data(&style_str);
+                    window.imp().css_provider.get().unwrap().load_from_data(&style_str).ok();
                 }
 
                 font_chooser.close();
@@ -161,7 +194,7 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
                 cfg.save();
 
                 let style_str = get_style_string(&cfg);
-                let _ = window.imp().css_provider.get().unwrap().load_from_data(&style_str);
+                window.imp().css_provider.get().unwrap().load_from_data(&style_str).ok();
 
                 color_chooser.close();
 
@@ -195,7 +228,7 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
                 cfg.save();
 
                 let style_str = get_style_string(&cfg);
-                let _ = window.imp().css_provider.get().unwrap().load_from_data(&style_str);
+                window.imp().css_provider.get().unwrap().load_from_data(&style_str).ok();
                 color_chooser.close();
 
                 Inhibit(true)
@@ -207,20 +240,22 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
     let reset = Label::new(Some("Reset"));
     reset.set_xalign(0.0);
 
-    ctxmenu.add_item(&reset, Box::new(clone!(@weak window, @weak ontop_btn, @weak dock_btn, @weak borders_btn => @default-return Inhibit(true), move |_wg, _ev| {
+    ctxmenu.add_item(&reset, Box::new(clone!(@weak window, @weak ontop_btn, @weak dock_btn, @weak borders_btn, @weak auto_tl_btn => @default-return Inhibit(true), move |_wg, _ev| {
         let cfg_path = AppConfig::config_dir();
-        let _ = cfg_path.delete();
+        cfg_path.delete().ok();
 
         let cfg = AppConfig::new();
 
         let style_str = get_style_string(&cfg);
-        let _ = window.imp().css_provider.get().unwrap().load_from_data(&style_str);
+        window.imp().css_provider.get().unwrap().load_from_data(&style_str).ok();
 
         window.set_keep_above(cfg.ontop);
         window.set_decorated(cfg.borders);
         ontop_btn.set_active(cfg.ontop);
         borders_btn.set_active(cfg.borders);
+        auto_tl_btn.set_active(cfg.auto_tl);
 
+        let _  = window.imp().channel_sender.get().unwrap().send(Message::SetTlLabelVisibilty(cfg.auto_tl));
 
         if cfg.docked {
             window.set_type_hint(gdk::WindowTypeHint::Dock);
@@ -240,23 +275,27 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
         &trans_dict,
         Box::new(
             clone!(@weak window => @default-return Inhibit(true), move |_wg, _ev| {
+                let reference_dialog = ReferenceDialog::new(&window);
+
+                if let Some(label) = window.imp().sub_label.get() {
+                    if let Some(bounds) = label.selection_bounds() {
+                        let (start, end) = bounds;
+                        reference_dialog.translator.set_text_and_tl(
+                            &label
+                                .text()
+                                .as_str()
+                                .graphemes(true)
+                                .collect::<Vec<&str>>()[start as usize..end as usize]
+                                .join("")
+                        )
+                    }
+                };
+
+                reference_dialog.run_async();
                 Inhibit(true)
             }),
         ),
-        Some(Box::new(
-            clone!(@weak window => @default-return false, move |wg| {
-                println!("Hello World");
-                match window.imp().sub_label.get() {
-                    Some(label) => {
-                        match label.selection_bounds() {
-                            Some(..) => { true },
-                            None => {false }
-                        }
-                    },
-                    None => {false}
-                }
-            }),
-        )),
+        None
     );
 
     let quit = Label::new(Some("Quit"));
@@ -273,5 +312,5 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
         None,
     );
 
-    return ctxmenu;
+    ctxmenu
 }

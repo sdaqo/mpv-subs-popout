@@ -9,8 +9,7 @@ use super::Language;
 
 const BASE_URL: &str = "https://translate.google.com/m";
 
-pub struct GoogleScrape {
-}
+pub struct GoogleScrape;
 
 impl Translator for GoogleScrape {
     fn new() -> Self {
@@ -20,13 +19,13 @@ impl Translator for GoogleScrape {
     fn translate(&self, text: &str, in_lang: impl LanguageExt, out_lang: impl LanguageExt) -> Result<TranslatorResponse, Error> {
       let in_lang_code = match Language::from_language_code(&in_lang.to_language_code()) {
          Some(lang) => { lang.to_language_code() } ,
-         None => { return Err( Error::LanguageNotAvailableError(in_lang.to_language_name()) ) }
+         None => { return Err( Error::LanguageNotAvailable(in_lang.to_language_name()) ) }
       };
 
 
       let out_lang_code = match Language::from_language_code(&out_lang.to_language_code()) {
          Some(lang) => { lang.to_language_code() } ,
-         None => { return Err( Error::LanguageNotAvailableError(out_lang.to_language_name()) ) }
+         None => { return Err( Error::LanguageNotAvailable(out_lang.to_language_name()) ) }
       };
 
       let client = reqwest::blocking::Client::new();
@@ -45,19 +44,19 @@ impl Translator for GoogleScrape {
       let text = match res {
          Ok(res) => {
             if res.status().as_u16() != 200 {
-               return Err(Error::GoogleError(res.status().as_u16()));
+               return Err(Error::Google(res.status().as_u16()));
             }
             res.text()
          },
          Err(error) => {
-            return Err(Error::RequestError(error.to_string()));
+            return Err(Error::Request(error.to_string()));
          }
       };
       
       let text = match text {
          Ok(text) => { text },
          Err(error) => { 
-            return Err(Error::DeserializationError(error.to_string()));
+            return Err(Error::Deserialization(error.to_string()));
          }
       };
 
@@ -86,5 +85,9 @@ impl Translator for GoogleScrape {
 
     fn get_name() -> String {
        "Google Translate Scraper".to_string()
+    }
+
+    fn get_api_key_url() -> Option<String> {
+      None
     }
 }

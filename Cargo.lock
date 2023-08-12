@@ -474,6 +474,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "glib-build-tools"
+version = "0.17.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7a65d79efe318ef2cbbbb37032b125866fd82c34ea44c816132621bbc552e716"
+
+[[package]]
 name = "glib-macros"
 version = "0.17.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -746,6 +752,25 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "28b29a3cd74f0f4598934efe3aeba42bae0eb4680554128851ebbecb02af14e6"
 
 [[package]]
+name = "is-docker"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "928bae27f42bc99b60d9ac7334e3a21d10ad8f1835a4e12ec3ec0464765ed1b3"
+dependencies = [
+ "once_cell",
+]
+
+[[package]]
+name = "is-wsl"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "173609498df190136aa7dea1a91db051746d339e18476eed5ca40521f02d7aa5"
+dependencies = [
+ "is-docker",
+ "once_cell",
+]
+
+[[package]]
 name = "itoa"
 version = "1.0.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -829,15 +854,18 @@ dependencies = [
 name = "mpv-subs-popout"
 version = "0.3.1"
 dependencies = [
+ "glib-build-tools",
  "gtk",
  "home-config",
  "mpvipc",
+ "open",
  "regex",
  "reqwest",
  "serde",
  "serde_json",
  "strum",
  "strum_macros",
+ "unicode-segmentation",
 ]
 
 [[package]]
@@ -901,6 +929,17 @@ name = "once_cell"
 version = "1.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dd8b5dd2ae5ed71462c540258bedcb51965123ad7e7ccf4b9a8cafaa4a63576d"
+
+[[package]]
+name = "open"
+version = "5.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cfabf1927dce4d6fdf563d63328a0a506101ced3ec780ca2135747336c98cef8"
+dependencies = [
+ "is-wsl",
+ "libc",
+ "pathdiff",
+]
 
 [[package]]
 name = "openssl"
@@ -971,6 +1010,12 @@ dependencies = [
  "libc",
  "system-deps",
 ]
+
+[[package]]
+name = "pathdiff"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8835116a5c179084a830efb3adc117ab007512b535bc1a21c991d3b32a6b44dd"
 
 [[package]]
 name = "percent-encoding"
@@ -1535,6 +1580,12 @@ checksum = "5c5713f0fc4b5db668a2ac63cdb7bb4469d8c9fed047b1d0292cc7b0ce2ba921"
 dependencies = [
  "tinyvec",
 ]
+
+[[package]]
+name = "unicode-segmentation"
+version = "1.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1dd624098567895118886609431a7c3b8f516e41d30e0643f03d94592a147e36"
 
 [[package]]
 name = "url"

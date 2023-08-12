@@ -3,10 +3,10 @@ pub mod dictionaries;
 
 #[derive(Debug)]
 pub enum Error {
-   LanguageNotAvailableError(String),
-   DeserializationError(String),
-   RequestError(String),
-   GoogleError(u16),
+   LanguageNotAvailable(String),
+   Deserialization(String),
+   Request(String),
+   Google(u16),
    NoTranslation
 }
 
@@ -18,9 +18,10 @@ pub struct TranslatorResponse {
 
 pub mod prelude {
    pub trait Translator {
-      fn new() -> Self;
+      fn new() -> Self where Self: Sized;
       fn translate(&self, text: &str, in_lang: impl LanguageExt, out_lang: impl LanguageExt) -> Result<super::TranslatorResponse, super::Error>;
       fn get_name() -> String;
+      fn get_api_key_url() -> Option<String>;
    }
 
    pub trait Dictionary {
@@ -38,6 +39,6 @@ pub mod prelude {
       fn from_language_code(code: &str) -> Option<Box<Self>>;
       fn to_language_code(&self) -> String;
       fn to_language_name(&self) -> String;
-      fn get_iterator() -> Box<dyn Iterator<Item = Self>>;
+      fn get_iterator() -> Box<dyn Iterator<Item = Self>> ;
    }
 }

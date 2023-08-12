@@ -8,7 +8,7 @@ mod language;
 
 use std::panic;
 
-use gtk::{prelude::*, subclass::prelude::ObjectSubclassIsExt};
+use gtk::{prelude::*, subclass::prelude::ObjectSubclassIsExt, gio};
 use gtk::Application;
 
 use app::build_window;
@@ -17,12 +17,14 @@ use app::utils::load_settings;
 
 fn main() {
     panic::set_hook(Box::new(|_info| {
-        println!("{}", _info.to_string());
         // Suppress panic warnings because mpvipc panics when we get an RST packet. ¯\_(ツ)_/¯
     }));
-   
+
+    gio::resources_register_include!("mpv_subs_popout.gresources")
+        .expect("Failed to register resources.");
+
     let application = Application::builder()
-        .application_id("dev.sdaqo.mpvSubsPopout")
+        .application_id("org.sdaqo.mpv-subs-popout")
         .build();
 
     application.connect_activate(|app| {
