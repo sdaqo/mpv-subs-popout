@@ -11,7 +11,7 @@ https://github.com/sdaqo/mpv-subs-popout/assets/63876564/063e52e4-dddd-46e6-92f1
 ## Installation
 
 ### Mpv Configuration
-This app uses mpv's ipc to get the current subs so you have to acivate it:
+This app uses mpv's ipc to get the current subs so you have to activate it:
 
 For Linux Add `input-ipc-server=/tmp/mpvsock` to your [mpv config](https://mpv.io/manual/stable/#files-~/-config/mpv).
 
