@@ -139,6 +139,8 @@ cargo build --release
 - Custom text color
 - Linux & Windows Support
 
+**Note that some features like docked or always on top do not work under wayland!**
+
 ### Planned
 - Dictionary for looking up words
 - Any other suggested features (Make an Issue)
