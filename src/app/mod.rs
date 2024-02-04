@@ -34,21 +34,21 @@ pub fn build_window(app: &gtk::Application) -> MpvSubsWindow {
 
     let label_box = gtk::Box::new(gtk::Orientation::Vertical, 6);
     label_box.set_homogeneous(true);
+    label_box.set_margin(9);
 
     let sub_label = Label::builder()
         .name("sub_label")
         .selectable(true)
         .build();
     sub_label.style_context().add_class("sub_label");
-
     ctx_menu.attach_to_widget(&sub_label);
     
 
     let tl_label = Label::builder()
         .name("tl_label")
         .build();
-
     tl_label.style_context().add_class("sub_label");
+    ctx_menu.attach_to_widget(&tl_label);
 
     if let Some(size) = cfg.size_lock {
         label_box.set_size_request(size.0, size.1);
@@ -57,11 +57,9 @@ pub fn build_window(app: &gtk::Application) -> MpvSubsWindow {
     }
 
     window.imp().sub_label.set(sub_label).ok();
-    label_box.add(window.imp().sub_label.get().unwrap());
-
-    ctx_menu.attach_to_widget(&tl_label);
     window.imp().tl_label.set(tl_label).ok();
 
+    label_box.add(window.imp().sub_label.get().unwrap());
     if cfg.auto_tl {
         label_box.add(window.imp().tl_label.get().unwrap());
     }
