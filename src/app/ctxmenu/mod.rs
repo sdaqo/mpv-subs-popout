@@ -99,6 +99,44 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
         None,
     );
 
+    let sizelock_btn = CheckButton::builder()
+        .label("Lock Size")
+        .active(config.size_lock != None)
+        .build();
+
+    ctxmenu.add_item(
+        &sizelock_btn,
+        Box::new(
+            clone!(@weak window => @default-return Inhibit(true), move |wg, _ev| {
+                let state = wg.is_active();
+
+                wg.set_active(!state);
+                
+                let mut config = AppConfig::new();
+                let label_box = window.imp().label_box.get().unwrap();
+                if !state {
+                    let width = label_box.allocated_width();
+                    let height = label_box.allocated_height();
+
+                    label_box.set_size_request(width, height);
+                    window.imp().sub_label.get().unwrap().set_wrap(true);
+                    window.imp().sub_label.get().unwrap().set_wrap(true);
+
+                    config.size_lock = Some((width, height));
+                } else {
+                    label_box.set_size_request(0, 0);
+                    window.imp().sub_label.get().unwrap().set_wrap(false);
+                    window.imp().sub_label.get().unwrap().set_wrap(false);
+                    config.size_lock = None;
+                }
+
+                config.save();
+                Inhibit(true)
+            }),
+        ),
+        None,
+    );
+
     let auto_tl_btn = CheckButton::builder()
         .label("Auto Translate")
         .active(config.auto_tl)
@@ -110,13 +148,18 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
             clone!(@weak window => @default-return Inhibit(true), move |wg, _ev| {
                 let state = wg.is_active();
 
-
                 wg.set_active(!state);
 
                 let _  = window.imp().channel_sender.get().unwrap().send(Message::SetTlLabelVisibilty(!state));
                 let _  = window.imp().channel_sender.get().unwrap().send(Message::UpdateTlLabel("".to_string()));
 
                 let mut config = AppConfig::new();
+                if let Some(size) = config.size_lock {
+                    window.imp().label_box.get().unwrap().set_size_request(size.0, size.1);
+                    window.imp().sub_label.get().unwrap().set_wrap(true);
+                    window.imp().sub_label.get().unwrap().set_wrap(true);
+                }
+
                 config.auto_tl = !state;
                 config.save();
 

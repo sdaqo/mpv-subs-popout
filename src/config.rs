@@ -18,6 +18,7 @@ pub struct AppConfig {
     pub borders: bool,
     pub bg_col: String,
     pub text_col: String,
+    pub size_lock: Option<(i32, i32)>,
     pub auto_tl: bool,
     pub default_tl_engine: String,
     pub translators: Vec<TlEngineConfig>
@@ -32,6 +33,7 @@ impl AppConfig {
             docked: false,
             ontop: true,
             borders: true,
+            size_lock: None,
             bg_col: "rgb(42, 46, 50)".to_owned(),
             text_col: "rgb(255, 255, 255)".to_owned(),
             auto_tl: false,

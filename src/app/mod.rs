@@ -28,25 +28,21 @@ pub fn build_window(app: &gtk::Application) -> MpvSubsWindow {
         gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
     );
 
-    let ctx_menu = build_ctxmenu(&window);
-    
-    let label_box = gtk::Box::new(gtk::Orientation::Vertical, 6);
+    let cfg = AppConfig::new();
 
+    let ctx_menu = build_ctxmenu(&window);
+
+    let label_box = gtk::Box::new(gtk::Orientation::Vertical, 6);
     label_box.set_homogeneous(true);
 
     let sub_label = Label::builder()
         .name("sub_label")
         .selectable(true)
         .build();
-
     sub_label.style_context().add_class("sub_label");
 
     ctx_menu.attach_to_widget(&sub_label);
-
-    window.imp().sub_label.set(sub_label).ok();
-    label_box.add(window.imp().sub_label.get().unwrap());
     
-    let cfg = AppConfig::new();
 
     let tl_label = Label::builder()
         .name("tl_label")
@@ -54,8 +50,16 @@ pub fn build_window(app: &gtk::Application) -> MpvSubsWindow {
 
     tl_label.style_context().add_class("sub_label");
 
-    ctx_menu.attach_to_widget(&tl_label);
+    if let Some(size) = cfg.size_lock {
+        label_box.set_size_request(size.0, size.1);
+        sub_label.set_wrap(true);
+        tl_label.set_wrap(true);
+    }
 
+    window.imp().sub_label.set(sub_label).ok();
+    label_box.add(window.imp().sub_label.get().unwrap());
+
+    ctx_menu.attach_to_widget(&tl_label);
     window.imp().tl_label.set(tl_label).ok();
 
     if cfg.auto_tl {
