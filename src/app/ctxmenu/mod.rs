@@ -225,7 +225,7 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
                     Some(&window)
                 );
 
-                let res =color_chooser.run();
+                let res = color_chooser.run();
 
                 if res != gtk::ResponseType::Ok {
                     color_chooser.close();

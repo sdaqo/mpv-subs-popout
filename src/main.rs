@@ -30,6 +30,11 @@ fn main() {
     application.connect_activate(|app| {
         let window = build_window(app);
 
+        window.set_visual(
+            GtkWindowExt::screen(&window)
+            .unwrap()
+            .rgba_visual().as_ref()
+        );
         window.show_all();
         load_settings(&window);
 
