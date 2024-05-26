@@ -92,7 +92,7 @@ choco install python
 # Restart Shell here
 ``` 
 
-From here you might also want to follow the [ci build steps](https://github.com/sdaqo/mpv-subs-popout/blob/c98c1702a798a7a92464e04784d60b1e24f77008/.github/workflows/rust.yml#L10), they lead you to same zip in the release builds.
+From here you might also want to follow the [ci build steps](https://github.com/sdaqo/mpv-subs-popout/blob/c98c1702a798a7a92464e04784d60b1e24f77008/.github/workflows/rust.yml#L10), they lead you to the same *.zip as in the release builds.
 
 3. Install gvsbuild
 ```powershell
