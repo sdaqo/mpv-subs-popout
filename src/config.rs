@@ -1,12 +1,13 @@
 use home_config::HomeConfig;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Default)]
 pub struct TlEngineConfig {
     pub name: String,
     pub api_key: String,
     pub default_lang_from: String,
-    pub default_lang_to: String
+    pub default_lang_to: String,
+    pub url: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Default)]
@@ -21,7 +22,7 @@ pub struct AppConfig {
     pub size_lock: Option<(i32, i32)>,
     pub auto_tl: bool,
     pub default_tl_engine: String,
-    pub translators: Vec<TlEngineConfig>
+    pub translators: Vec<TlEngineConfig>,
 }
 
 impl AppConfig {
@@ -40,7 +41,7 @@ impl AppConfig {
             ..AppConfig::default()
         };
 
-        config.json::<AppConfig>().unwrap_or(default_config)   
+        config.json::<AppConfig>().unwrap_or(default_config)
     }
 
     pub fn config_dir() -> HomeConfig {

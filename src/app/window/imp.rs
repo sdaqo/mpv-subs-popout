@@ -1,6 +1,6 @@
 use gtk::glib;
-use gtk::subclass::prelude::*;
 use gtk::glib::once_cell::sync::OnceCell;
+use gtk::subclass::prelude::*;
 
 use crate::app::channel::Message;
 
@@ -10,7 +10,7 @@ pub struct MpvSubsWindow {
     pub sub_label: OnceCell<gtk::Label>,
     pub tl_label: OnceCell<gtk::Label>,
     pub label_box: OnceCell<gtk::Box>,
-    pub channel_sender: OnceCell<glib::Sender<Message>>
+    pub channel_sender: OnceCell<glib::Sender<Message>>,
 }
 
 #[glib::object_subclass]
@@ -19,7 +19,6 @@ impl ObjectSubclass for MpvSubsWindow {
     type Type = super::MpvSubsWindow;
     type ParentType = gtk::ApplicationWindow;
 }
-
 
 impl ObjectImpl for MpvSubsWindow {}
 

@@ -101,7 +101,7 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
 
     let sizelock_btn = CheckButton::builder()
         .label("Lock Size")
-        .active(config.size_lock != None)
+        .active(config.size_lock.is_some())
         .build();
 
     ctxmenu.add_item(
@@ -191,6 +191,7 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
                     font_chooser.close();
                     return Inhibit(true);
                 }
+
 
                 if let Some(font_desc) = font_chooser.font_desc() {
                     let family = font_desc.family().unwrap_or_default().to_string();
@@ -334,7 +335,7 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
                     }
                 };
 
-                reference_dialog.run_async();
+                reference_dialog.run();
                 Inhibit(true)
             }),
         ),

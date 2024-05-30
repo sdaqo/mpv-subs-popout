@@ -8,6 +8,11 @@
     <property name="stock">gtk-go-forward</property>
     <property name="icon_size">5</property>
   </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="stock">gtk-redo</property>
+  </object>
   <object class="GtkImage" id="image3">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -145,10 +150,11 @@
                 </child>
                 <child>
                   <object class="GtkLinkButton" id="api_key_hint_label">
+                    <property name="label" translatable="yes">Get Api Key Here</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="receives-default">False</property>
                     <property name="margin-top">5</property>
-                    <property name="label" translatable="yes">Get Api Key Here</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -171,6 +177,47 @@
           </packing>
         </child>
         <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="margin-start">10</property>
+            <property name="margin-end">10</property>
+            <property name="spacing">5</property>
+            <child>
+              <object class="GtkEntry" id="url_field">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="margin-top">10</property>
+                <property name="placeholder-text" translatable="yes">Translator URL</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="reset_url_button">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="image">image2</property>
+                <property name="always-show-image">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkLabel">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
@@ -184,7 +231,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">3</property>
+            <property name="position">4</property>
           </packing>
         </child>
         <child>
@@ -294,7 +341,7 @@
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">4</property>
+            <property name="position">5</property>
           </packing>
         </child>
       </object>

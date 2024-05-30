@@ -1,7 +1,7 @@
 use glib::subclass::InitializingObject;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
-use gtk::{CompositeTemplate, glib};
+use gtk::{glib, CompositeTemplate};
 
 // https://gtk-rs.org/gtk3-rs/stable/latest/docs/gtk3_macros/derive.CompositeTemplate.html
 
@@ -10,7 +10,7 @@ use gtk::{CompositeTemplate, glib};
 pub struct TranslatorWidget {
     #[template_child(id = "tl_engine_combo")]
     pub tl_engine_combo: TemplateChild<gtk::ComboBoxText>,
-    
+
     #[template_child(id = "tl_engine_default_cb")]
     pub tl_engine_default_cb: TemplateChild<gtk::CheckButton>,
 
@@ -19,7 +19,13 @@ pub struct TranslatorWidget {
 
     #[template_child(id = "api_key_hint_label")]
     pub api_key_hint_label: TemplateChild<gtk::LinkButton>,
-    
+
+    #[template_child(id = "url_field")]
+    pub url_field: TemplateChild<gtk::Entry>,
+
+    #[template_child(id = "reset_url_button")]
+    pub reset_url_button: TemplateChild<gtk::Button>,
+
     #[template_child(id = "lang_from_combo")]
     pub lang_from_combo: TemplateChild<gtk::ComboBoxText>,
 
@@ -50,7 +56,6 @@ pub struct TranslatorWidget {
     #[template_child(id = "lang_to_field")]
     pub lang_to_field: TemplateChild<gtk::TextView>,
 }
-
 
 #[glib::object_subclass]
 impl ObjectSubclass for TranslatorWidget {

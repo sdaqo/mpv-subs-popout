@@ -1,6 +1,6 @@
 mod translator;
 
-use gtk::{prelude::*};
+use gtk::prelude::*;
 use translator::TranslatorWidget;
 
 pub struct ReferenceDialog {
@@ -20,13 +20,13 @@ impl ReferenceDialog {
 
         stack.add_named(&translator, "translator");
         // stack.add_named(&dict, "dictionary");
-        
+
         dialog.set_title("Reference");
         dialog.set_default_size(500, 400);
         dialog.set_modal(true);
         dialog.set_transient_for(Some(window));
         dialog.set_icon_name(Some("gtk-find-and-replace"));
-        
+
         let ca = dialog.content_area();
         ca.set_vexpand(true);
         ca.set_hexpand(true);
@@ -42,7 +42,7 @@ impl ReferenceDialog {
         }
     }
 
-    pub fn run_async(&self) {
-        self.dialog.run_future();
+    pub fn run(&self) {
+        self.dialog.run();
     }
 }

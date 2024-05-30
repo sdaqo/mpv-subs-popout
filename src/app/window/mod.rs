@@ -1,9 +1,9 @@
 mod imp;
 
-use gtk::{gio, glib, Application, prelude::*};
 use glib::Object;
+use gtk::{gio, glib, prelude::*, Application};
 
-glib::wrapper! { 
+glib::wrapper! {
     pub struct MpvSubsWindow(ObjectSubclass<imp::MpvSubsWindow>)
         @extends gtk::ApplicationWindow, gtk::Window, gtk::Bin, gtk::Container, gtk::Widget,
         @implements gio::ActionGroup,gtk::Buildable, gio::ActionMap;
@@ -18,4 +18,3 @@ impl MpvSubsWindow {
         self.property::<Application>("application").quit();
     }
 }
-

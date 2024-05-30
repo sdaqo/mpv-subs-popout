@@ -1,11 +1,9 @@
-
-use gtk::prelude::*;
 use gtk::gdk;
+use gtk::prelude::*;
 
 pub struct ContextMenu {
-    menu: gtk::Menu
+    menu: gtk::Menu,
 }
-
 
 impl ContextMenu {
     pub fn new() -> Self {
@@ -15,9 +13,10 @@ impl ContextMenu {
     }
 
     pub fn add_item<W: IsA<gtk::Widget>>(
-        &self, widget: &W,
+        &self,
+        widget: &W,
         callback: Box<dyn Fn(&W, &gdk::EventButton) -> Inhibit>,
-        callback_should_show: Option<Box<dyn Fn(&W) -> bool>>
+        callback_should_show: Option<Box<dyn Fn(&W) -> bool>>,
     ) {
         let item = gtk::MenuItem::new();
         item.add(widget);
@@ -34,11 +33,9 @@ impl ContextMenu {
                 }
             });
         }
-        
+
         let widget_clone = widget.clone();
-        item.connect_button_press_event(move |_wg, ev| {
-            callback(&widget_clone, ev)
-        });
+        item.connect_button_press_event(move |_wg, ev| callback(&widget_clone, ev));
 
         self.menu.append(&item);
         item.show_all();
@@ -46,7 +43,7 @@ impl ContextMenu {
 
     pub fn attach_to_widget<W: IsA<gtk::Widget>>(&self, widget: &W) {
         let cloned_menu = self.menu.clone();
-        
+
         widget.connect_button_press_event(move |_, event| {
             if event.button() == gdk::BUTTON_SECONDARY {
                 cloned_menu.popup_easy(event.button(), event.time());
@@ -59,6 +56,5 @@ impl ContextMenu {
                 Inhibit(false)
             }
         });
-
     }
 }
