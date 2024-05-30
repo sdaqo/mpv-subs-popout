@@ -31,8 +31,8 @@ impl Translator for GoogleApiV1 {
         let client = reqwest::blocking::Client::new();
 
         let mut form = HashMap::<&str, &str>::new();
-        form.insert("sl", &in_lang_code);
-        form.insert("tl", &out_lang_code);
+        form.insert("sl", in_lang_code);
+        form.insert("tl", out_lang_code);
         form.insert("q", text);
 
         let res = client

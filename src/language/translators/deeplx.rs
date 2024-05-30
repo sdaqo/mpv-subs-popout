@@ -35,12 +35,12 @@ impl Translator for DeeplX {
         let client = reqwest::blocking::Client::new();
         let mut data = HashMap::<&str, &str>::new();
         if in_lang_code != "auto" {
-            data.insert("source_lang", &in_lang_code);
+            data.insert("source_lang", in_lang_code);
         } else {
             data.insert("source_lang", "");
         }
 
-        data.insert("target_lang", &out_lang_code);
+        data.insert("target_lang", out_lang_code);
         data.insert("text", text);
 
         let mut headers = HeaderMap::new();
@@ -54,10 +54,8 @@ impl Translator for DeeplX {
                 if let Ok(v) = HeaderValue::from_str(&format!("DeepL-Auth-Key {}", key)) {
                     headers.insert(reqwest::header::AUTHORIZATION, v);
                 }
-            } else {
-                if let Ok(v) = HeaderValue::from_str(&format!("Bearer {}", key)) {
-                    headers.insert(reqwest::header::AUTHORIZATION, v);
-                }
+            } else if let Ok(v) = HeaderValue::from_str(&format!("Bearer {}", key)) {
+                headers.insert(reqwest::header::AUTHORIZATION, v);
             }
         };
 

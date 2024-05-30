@@ -192,6 +192,7 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
                     return Inhibit(true);
                 }
 
+
                 if let Some(font_desc) = font_chooser.font_desc() {
                     let family = font_desc.family().unwrap_or_default().to_string();
                     let size = font_desc.size() / gtk::pango::SCALE;
@@ -334,7 +335,7 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
                     }
                 };
 
-                reference_dialog.run_async();
+                reference_dialog.run();
                 Inhibit(true)
             }),
         ),

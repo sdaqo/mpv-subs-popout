@@ -37,8 +37,8 @@ impl Translator for GoogleApiV2 {
             .post(&self.url)
             .query(&[
                 ("format", "text"),
-                ("target", &out_lang_code),
-                ("source", &in_lang_code),
+                ("target", out_lang_code),
+                ("source", in_lang_code),
                 ("key", self.key.as_ref().unwrap()),
                 ("q", text),
             ])

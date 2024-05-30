@@ -42,7 +42,7 @@ impl ReferenceDialog {
         }
     }
 
-    pub async fn run_async(&self) {
-        self.dialog.run_future().await;
+    pub fn run(&self) {
+        self.dialog.run();
     }
 }

@@ -51,8 +51,8 @@ impl TranslatorWidget {
         self.imp().lang_to_combo.remove_all();
 
         for (full, code) in transltor.get_language_map().into_iter() {
-            self.imp().lang_from_combo.append(Some(&code), &full);
-            self.imp().lang_to_combo.append(Some(&code), &full);
+            self.imp().lang_from_combo.append(Some(code), full);
+            self.imp().lang_to_combo.append(Some(code), full);
         }
 
         if let Some(api_key_url) = transltor.get_api_key_url() {
@@ -322,7 +322,7 @@ impl TranslatorWidget {
         let api_key = self.imp().api_key_field.buffer().text();
 
         let mut translator = MetaTranslator::new(translator, Some(url));
-        if api_key.len() > 0 {
+        if !api_key.is_empty() {
             translator.set_key(api_key);
         }
         let translation = translator.translate(&text, &lang_from, &lang_to);

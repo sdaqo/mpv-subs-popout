@@ -108,7 +108,7 @@ fn tl_and_set(
     let lang_to = tl_engine_config.default_lang_to;
 
     let mut translator = MetaTranslator::new(tl_engine_config.name, tl_engine_config.url);
-    if tl_engine_config.api_key.len() > 0 {
+    if !tl_engine_config.api_key.is_empty() {
         translator.set_key(tl_engine_config.api_key);
     }
     let translation = translator.translate(&text, &lang_from, &lang_to);
