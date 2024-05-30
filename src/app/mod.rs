@@ -1,17 +1,16 @@
-pub mod window;
-pub mod ctxmenu;
-pub mod utils;
 pub mod channel;
+pub mod ctxmenu;
 pub mod reference_dialog;
+pub mod utils;
+pub mod window;
 
-use gtk::{prelude::*, subclass::prelude::ObjectSubclassIsExt, Label};
 use gtk::gdk;
+use gtk::{prelude::*, subclass::prelude::ObjectSubclassIsExt, Label};
 
-use window::MpvSubsWindow;
-use ctxmenu::build_ctxmenu;
-use channel::setup_channel;
 use crate::config::AppConfig;
-
+use channel::setup_channel;
+use ctxmenu::build_ctxmenu;
+use window::MpvSubsWindow;
 
 pub fn build_window(app: &gtk::Application) -> MpvSubsWindow {
     let window = MpvSubsWindow::new(app);
@@ -36,17 +35,11 @@ pub fn build_window(app: &gtk::Application) -> MpvSubsWindow {
     label_box.set_homogeneous(true);
     label_box.set_margin(9);
 
-    let sub_label = Label::builder()
-        .name("sub_label")
-        .selectable(true)
-        .build();
+    let sub_label = Label::builder().name("sub_label").selectable(true).build();
     sub_label.style_context().add_class("sub_label");
     ctx_menu.attach_to_widget(&sub_label);
-    
 
-    let tl_label = Label::builder()
-        .name("tl_label")
-        .build();
+    let tl_label = Label::builder().name("tl_label").build();
     tl_label.style_context().add_class("sub_label");
     ctx_menu.attach_to_widget(&tl_label);
 
@@ -64,12 +57,10 @@ pub fn build_window(app: &gtk::Application) -> MpvSubsWindow {
         label_box.add(window.imp().tl_label.get().unwrap());
     }
 
-
     window.add(&label_box);
     window.imp().label_box.set(label_box).ok();
 
     window.imp().channel_sender.set(setup_channel(&window)).ok();
-    
+
     window
 }
-

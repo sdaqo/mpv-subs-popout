@@ -1,15 +1,15 @@
 // Dont Start with Terminal on Windows
 #![windows_subsystem = "windows"]
 
-mod config;
 mod app;
-mod mpv;
+mod config;
 mod language;
+mod mpv;
 
 use std::panic;
 
-use gtk::{prelude::*, subclass::prelude::ObjectSubclassIsExt, gio};
 use gtk::Application;
+use gtk::{gio, prelude::*, subclass::prelude::ObjectSubclassIsExt};
 
 use app::build_window;
 use app::channel::Message;
@@ -32,13 +32,20 @@ fn main() {
 
         window.set_visual(
             GtkWindowExt::screen(&window)
-            .unwrap()
-            .rgba_visual().as_ref()
+                .unwrap()
+                .rgba_visual()
+                .as_ref(),
         );
         window.show_all();
         load_settings(&window);
 
-        window.imp().channel_sender.get().unwrap().send(Message::SpawnThread).ok();
+        window
+            .imp()
+            .channel_sender
+            .get()
+            .unwrap()
+            .send(Message::SpawnThread)
+            .ok();
     });
 
     application.run();

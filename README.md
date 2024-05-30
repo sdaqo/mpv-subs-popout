@@ -130,7 +130,7 @@ cargo build --release
 ```
 
 ## Features
-- Full custom translator widget
+- Full custom translator widget (Google, DeeplX)
 - Auto translation in seperate line
 - Always works: Open mpv after the Popout or before, it detects mpv and attaches itself
 - Custom Font and Font size
@@ -139,7 +139,8 @@ cargo build --release
 - Custom text color
 - Linux & Windows Support
 
-**Note that some features like docked or always on top do not work under wayland!**
+**Note 1: Some features like docked or always on top do not work under wayland!**
+**Note 2: When setting the api key for the /v2/translate endpoint for DeeplX do it like this (with space) `[yourAccessToken] [yourAuthKey]`**
 
 ### Planned
 - Dictionary for looking up words

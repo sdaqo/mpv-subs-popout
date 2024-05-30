@@ -101,7 +101,7 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
 
     let sizelock_btn = CheckButton::builder()
         .label("Lock Size")
-        .active(config.size_lock != None)
+        .active(config.size_lock.is_some())
         .build();
 
     ctxmenu.add_item(
