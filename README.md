@@ -142,6 +142,7 @@ cargo build --release
 - Linux & Windows Support
 
 **Note 1: Some features like docked or always on top do not work under wayland!**
+
 **Note 2: When setting the api key for the /v2/translate endpoint for DeeplX do it like this (with space) `[yourAccessToken] [yourAuthKey]`**
 
 ### Planned
