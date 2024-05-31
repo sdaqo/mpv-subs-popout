@@ -66,7 +66,6 @@ impl TranslatorWidget {
             self.imp().api_key_hint_label.set_uri("");
             self.imp().api_key_field.set_sensitive(false);
         }
-        self.imp().url_field.buffer().set_text(&transltor.get_url());
 
         let mut cfg = AppConfig::new();
 
@@ -74,15 +73,22 @@ impl TranslatorWidget {
 
         if let Some(tl_cfg) = tl_cfg {
             self.load_from_tl_cfg(tl_cfg);
+            if let Some(override_url) = &tl_cfg.url {
+                self.imp().url_field.buffer().set_text(override_url);
+            } else {
+                self.imp().url_field.buffer().set_text(&transltor.get_url());
+            }
         } else {
             let new_tl_cfg = TlEngineConfig {
                 name: tl_engine_id.to_string(),
                 ..TlEngineConfig::default()
             };
             self.load_from_tl_cfg(&new_tl_cfg);
+            self.imp().url_field.buffer().set_text(&transltor.get_url());
             cfg.translators.push(new_tl_cfg);
             cfg.save();
         }
+
 
         self.imp()
             .tl_engine_default_cb
@@ -101,9 +107,6 @@ impl TranslatorWidget {
 
     fn load_from_tl_cfg(&self, tl_cfg: &TlEngineConfig) {
         self.imp().api_key_field.buffer().set_text(&tl_cfg.api_key);
-        if let Some(override_url) = &tl_cfg.url {
-            self.imp().url_field.buffer().set_text(override_url);
-        }
         self.imp()
             .lang_from_combo
             .set_active_id(Some(&tl_cfg.default_lang_from));
