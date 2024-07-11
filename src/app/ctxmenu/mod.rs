@@ -281,6 +281,29 @@ pub fn build_ctxmenu(window: &MpvSubsWindow) -> ContextMenu {
         None,
     );
 
+    let strip_nl_btn = CheckButton::builder()
+        .label("Strip New Lines")
+        .active(config.strip_nl)
+        .build();
+
+    ctxmenu.add_item(
+        &strip_nl_btn,
+        Box::new(
+            clone!(@weak window => @default-return Inhibit(true), move |wg, _ev| {
+                let state = wg.is_active();
+
+                wg.set_active(!state);
+            
+                let mut config = AppConfig::new();
+                config.strip_nl = !state;
+                config.save();
+
+                Inhibit(true)
+            }),
+        ),
+        None,
+    );
+
     let reset = Label::new(Some("Reset"));
     reset.set_xalign(0.0);
 

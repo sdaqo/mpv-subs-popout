@@ -50,10 +50,15 @@ pub fn mpv_subs_update(sender: glib::Sender<Message>) {
 
     let mut cancel_token = Arc::new(Mutex::new(false));
     while let Ok(sub_text) = get_sub_text(&mut mpv_conn) {
-        if let Some(text) = sub_text {
+        if let Some(mut text) = sub_text {
+            let cfg = AppConfig::new();
+
+            if cfg.strip_nl {
+                text = text.replace("\n", " ");
+            }
+
             sender.send(Message::UpdateLabel(text.clone())).ok();
 
-            let cfg = AppConfig::new();
             if !cfg.auto_tl {
                 continue;
             }

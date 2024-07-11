@@ -3,6 +3,7 @@ mod translator;
 use gtk::prelude::*;
 use translator::TranslatorWidget;
 
+#[allow(dead_code)]
 pub struct ReferenceDialog {
     dialog: gtk::Dialog,
     stack: gtk::Stack,
