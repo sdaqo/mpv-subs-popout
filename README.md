@@ -17,6 +17,8 @@ For Linux Add `input-ipc-server=/tmp/mpvsock` to your [mpv config](https://mpv.i
 
 For Windows Add `input-ipc-server=\\.\pipe\mpvsock` to your [mpv config](https://mpv.io/manual/stable/#files-on-windows). 
 
+---
+
 ### NixOS
 mpv-subs-popout is available in the official [nixpkgs](https://search.nixos.org/packages?channel=unstable&show=mpv-subs-popout&from=0&size=50&sort=relevance&type=packages&query=mpv-subs-popout) (it is currently on the unstable branch) 
 
