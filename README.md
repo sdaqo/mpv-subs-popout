@@ -17,7 +17,21 @@ For Linux Add `input-ipc-server=/tmp/mpvsock` to your [mpv config](https://mpv.i
 
 For Windows Add `input-ipc-server=\\.\pipe\mpvsock` to your [mpv config](https://mpv.io/manual/stable/#files-on-windows). 
 
+### NixOS
+mpv-subs-popout is available in the official [nixpkgs](https://search.nixos.org/packages?channel=unstable&show=mpv-subs-popout&from=0&size=50&sort=relevance&type=packages&query=mpv-subs-popout) (it is currently on the unstable branch) 
 
+Try it out with `nix run nixpkgs#mpv-subs-popout` or add it to you config:
+```nix
+environment.systemPackages = [ pkgs.mpv-subs-popout ];
+
+# With home manager
+home.packages = [ pkgs.mpv-subs-popout ];
+```
+
+If you are using homemanager you can specify the `input-ipc-server` for mpv directly in your config via
+```nix
+programs.mpv.input-ipc-server = "/tmp/mpvsock";
+```
 
 ### Arch
 With Aur helper:
