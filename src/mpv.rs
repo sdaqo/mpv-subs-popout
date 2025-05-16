@@ -48,17 +48,68 @@ pub fn mpv_subs_update(sender: glib::Sender<Message>) {
         .observe_property(1, "sub-text")
         .expect("Failed to observe property! ");
 
-    let mut cancel_token = Arc::new(Mutex::new(false));
-    while let Ok(sub_text) = get_sub_text(&mut mpv_conn) {
-        if let Some(mut text) = sub_text {
-            let cfg = AppConfig::new();
+    mpv_conn
+        .observe_property(2, "secondary-sub-text")
+        .expect("Failed to observe property! ");
 
+    let mut cancel_token = Arc::new(Mutex::new(false));
+
+    let mut last_sub = String::new();
+    let mut last_secondary_sub = String::new();
+
+    let mut has_two_subs = false;
+
+    while let Ok(event) = mpv_conn.event_listen() {
+        let cfg = AppConfig::new();
+
+        if let Event::PropertyChange {
+            id: 2,
+            property:
+                Property::Unknown {
+                    name: _,
+                    data: MpvDataType::String(mut text),
+                },
+        } = event
+        {
             if cfg.strip_nl {
                 text = text.replace("\n", " ");
             }
 
-            sender.send(Message::UpdateLabel(text.clone())).ok();
+            sender.send(
+                Message::UpdateLabel(
+                    format!("{}\n\n{}", last_sub.clone(), text.clone())
+                )
+            ).ok();
+            last_secondary_sub = text;
+        } else if let Event::PropertyChange {
+            id: 1,
+            property:
+                Property::Unknown {
+                    name: _,
+                    data: MpvDataType::String(mut text),
+                },
+        } = event 
+        {
+            if cfg.strip_nl {
+                text = text.replace("\n", " ");
+            }
 
+            if !last_secondary_sub.is_empty() {
+                has_two_subs = true;
+            }
+            
+            let mut message = match has_two_subs {
+                true => format!("{}\n\n{}", text.clone(), last_secondary_sub.clone()),
+                false => text.clone()
+            };
+
+            sender.send(
+                Message::UpdateLabel(
+                    message                     
+                )
+            ).ok();
+            last_sub = text.clone();
+            
             if !cfg.auto_tl {
                 continue;
             }
@@ -99,7 +150,7 @@ pub fn mpv_subs_update(sender: glib::Sender<Message>) {
                     .ok();
                 continue;
             }
-        }
+       }
     }
 }
 
@@ -130,27 +181,4 @@ fn tl_and_set(
     }
 
     Some(())
-}
-
-fn get_sub_text(mpv: &mut Mpv) -> Result<Option<String>, ()> {
-    let event: Event = match mpv.event_listen() {
-        Ok(ev) => ev,
-        Err(..) => {
-            return Err(());
-        }
-    };
-
-    if let Event::PropertyChange {
-        id: _,
-        property:
-            Property::Unknown {
-                name: _,
-                data: MpvDataType::String(string),
-            },
-    } = event
-    {
-        return Ok(Some(string));
-    }
-
-    Ok(None)
 }
