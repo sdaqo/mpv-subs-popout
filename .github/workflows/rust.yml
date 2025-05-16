@@ -70,7 +70,7 @@ jobs:
           
           Compress-Archive "mpv-subs-popout_$($version)_win64" ".\mpv-subs-popout_$($version)_win64.zip"
           
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: windows-artifact
           path: .\*.zip
@@ -100,7 +100,7 @@ jobs:
           cargo install cargo-deb
           cargo deb
           
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: linux-artifact
           path: |
