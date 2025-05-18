@@ -28,7 +28,7 @@ jobs:
         name: Build gtk3
         shell: powershell
         run: |
-          pipx gvsbuild
+          pipx install gvsbuild
           gvsbuild build gtk3
 
       - name: Set Rust Toolchain
