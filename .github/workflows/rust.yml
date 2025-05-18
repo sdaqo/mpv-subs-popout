@@ -24,15 +24,11 @@ jobs:
             C:\gtk-build\gtk\
           key: gtk3
           
-      - name: Upgrade Meson
-        run: |
-          pip install --upgrade meson
-          
       - if: ${{ steps.cache-gtk3.outputs.cache-hit != 'true' }}
         name: Build gtk3
         shell: powershell
         run: |
-          pipx install git+https://github.com/g40/gvsbuild@libpng
+          pipx gvsbuild
           gvsbuild build gtk3
 
       - name: Set Rust Toolchain
