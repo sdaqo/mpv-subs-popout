@@ -23,7 +23,11 @@ jobs:
           path: |
             C:\gtk-build\gtk\
           key: gtk3
-                
+          
+      - name: Upgrade Meson
+        run: |
+          pip install --upgrade meson
+          
       - if: ${{ steps.cache-gtk3.outputs.cache-hit != 'true' }}
         name: Build gtk3
         shell: powershell
