@@ -20,7 +20,7 @@ For Windows Add `input-ipc-server=\\.\pipe\mpvsock` to your [mpv config](https:/
 ---
 
 ### NixOS
-mpv-subs-popout is available in the official [nixpkgs](https://search.nixos.org/packages?channel=unstable&show=mpv-subs-popout&from=0&size=50&sort=relevance&type=packages&query=mpv-subs-popout) (it is currently on the unstable branch) 
+mpv-subs-popout is available in the official [nixpkgs](https://search.nixos.org/packages?channel=unstable&show=mpv-subs-popout&from=0&size=50&sort=relevance&type=packages&query=mpv-subs-popout)
 
 Try it out with `nix run nixpkgs#mpv-subs-popout` or add it to you config:
 ```nix
